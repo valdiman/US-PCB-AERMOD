@@ -68,5 +68,5 @@ fr <- fr[ , !(names(fr) %in% c("Source", "SampleID", "EPARegion", "StateSampled"
 fr <- fr[ , -c(111:118)]
 
 # Save Fox River data -----------------------------------------------------
-write.csv(fr, file = "Data/FoxRiver.csv",
+write.csv(fr, file = "Data/FoxRiver/FoxRiver.csv",
           row.names = FALSE)
