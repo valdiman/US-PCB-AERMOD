@@ -98,7 +98,7 @@ cp <- data.frame(
 
 # Water concentrations ----------------------------------------------------
 # Read data from Data Folder, FoxRiver.csv
-fx <- read.csv("Data/FoxRiver.csv")
+fx <- read.csv("Data/FoxRiver/FoxRiver_temp.csv")
 # Select Site Name
 # Operable Unit 1
 fx.ou1 <- fx[fx$SiteName == "Operable Unit 1", ]
