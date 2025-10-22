@@ -90,197 +90,132 @@ cp <- data.frame(
   Congener <- cp$Congener
   MW.PCB <- cp$MW.PCB
   nOrtho.Cl <- cp$nOrtho.Cl
-  H0.mean <- cp$H0.mean
-  H0.error <- cp$H0.error
-  Kow.mean <- cp$Kow.mean
-  Kow.error <- cp$Kow.error
+  H0 <- cp$H0.mean
+  Kow <- cp$Kow.mean
 }
 
-# Water concentrations ----------------------------------------------------
-# Read data from Data Folder, FoxRiver.csv
-fx <- read.csv("Data/FoxRiver/FoxRiver_temp.csv")
-# Select Site Name
-# Operable Unit 1
-fx.ou1 <- fx[fx$SiteName == "Operable Unit 1", ]
 
+# Water concentrations and meteorological data ----------------------------
+# Read data from Data Folder
+fx <- read.csv("Data/FoxRiver/FoxRiver_env.csv")
+fx.wt <- read.csv("Data/FoxRiver/FoxRiver_temp.csv")
+
+# Add water temperature to fx
+fx$wt <- fx.wt$temp_final
+
+# Select Site Name
+fx.site <- fx[fx$SiteName == "Lake Winnebago", ]
 
 # Calculate averages
-{
-  wc.values <- wc[, 8:166]
-  C.PCB.water.ave <- sapply(wc.values, mean)
-  C.PCB.water.error <- sapply(wc.values, sd)
-}
+C.PCB.water <- fx.site[, 7:110]
+SampleDates <- fx.site$SampleDate
 
-# Meteorological data -----------------------------------------------------
+# Environmental conditions
+tair <- fx.site$air_temp
+twater <- fx.site$wt
+u <- fx.site$wind_speed
+# Modify u @6.7 m to @10 m
+u10 <- (10.4/(log(6.7) + 8.1))*u
+P <- fx.site$air_pressure
 
-
-
-# Data obtained from ReadNOAAData.R data and ReadUSGSData.R codes
-# 2018-08
-{
-  tair.mean <- 21.3 # C, data from NOAA
-  tair.error <- 5.27 # C, data from NOAA
-  twater.mean <- 23.24 # C, data from USGS
-  twater.error <- 1.29 # C, data from USGS
-  u.mean <- 2.35 # m/s, data from NOAA
-  u.error <- 1.58 # m/s, data from NOAA
-  # Modify u @6.7 m to @10 m
-  u10.mean <- (10.4/(log(6.7) + 8.1))*u.mean
-  u10.error <- (10.4/(log(6.7) + 8.1))*u.error 
-  P.mean <- 1016 # mbar, data from NOAA
-  P.error <- 3.23 # mbar, data from NOAA
-}
+Num.Congener <- ncol(C.PCB.water) # number of PCB rows?
+Num.Samples <- nrow(fx.site) 
 
 # Flux calculations -------------------------------------------------------
 
-# Flux function
-final.result = function(MW.PCB, H0.mean, H0.error, 
-                        C.PCB.water.ave, C.PCB.water.error, nOrtho.Cl,
-                        Kow.mean, Kow.error) {
-  # fixed parameters
+final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
+                         tair, twater, u10, P) {
   
-  R <- 8.3144 # [Pa m3/K/mol]
-  T <- 298.15 # [K]
+  R <- 8.3144  # [Pa m3/K/mol]
+  T <- 298.15  # reference temp [K]
+  F.PCB.aw <- numeric(length(C.PCB.water.vec))
   
-  F.PCB.aw <- NULL
-  # number of replicates for Monte Carlo simulation
-  for (replication in 1:1000) {
+  # Loop over each sample
+  for (i in seq_along(C.PCB.water.vec)) {
+    Cw <- C.PCB.water.vec[i]
+    T.water <- twater[i]
+    T.air <- tair[i]
+    u <- u10[i]
+    P.atm <- P[i]
     
-    # Random parameters
-    # Parameters for calculating Delta Uaw
-    a <- rnorm(1, 0.085, 0.007)
-    b <- rnorm(1, 1, 0.5)
-    c <- rnorm(1, 32.7, 1.6)
-    # Parameter for calculating Delta Uoa
-    a2 <- rnorm(1, 0.13, 0.02) 
-    b2 <- rnorm(1, 2.9, 1.2)
-    c2 <- rnorm(1, 47.8, 4.3)
-    # Henry's law constant 
-    H0 <- rnorm(1, H0.mean, H0.error) # [Pa m3/mol]
-    # Octanol-water partition coefficient
-    Kow <- rnorm(1, Kow.mean, Kow.error) # [Lwater/Loctanol] 
-    # PCB water concentration
-    # Concentrations can be changed
-    C.PCB.water <- abs(rnorm(1, C.PCB.water.ave, C.PCB.water.error)) # [pg/L]
-    # DOC (Spencer et al 2012)
-    DOC <- abs(rnorm(1, 2, 0.3)) # [mg/L]
-    # Water temperature
-    T.water <- rnorm(1, twater.mean, twater.error) # [C]
-    # Air temperature
-    T.air <- rnorm(1, tair.mean, tair.error) # [C]
-    # atmospheric pressure
-    P <- rnorm(1, P.mean, P.error) # [mbar]
-    # Wind speed @10 m
-    u <- abs(rnorm(1, u10.mean, u10.error)) # [m/s] missing
+    # Internal energy parameters
+    a <- 0.85; b <- 1; c <- 32.7
+    a2 <- 0.13; b2 <- 2.9; c2 <- 47.8
     
-    # Computed values
-    # Henry's law constant (HLC) corrections
-    # PCB internal energy for the transfer of water to air transfer
-    DeltaUaw <- (a*MW.PCB-b*nOrtho.Cl+c)*1000 # [J/mol]
-    # Transform HLC to K
-    K <- 10^(H0)*101325/(R*T) # [Lwater/Lair]
-    # Correct K using water temperature
-    K.air.water <- K*exp(-(DeltaUaw/R)*(1/(T.water + 273.15) - 1/T)) # [Lwater/Lair]
-    # Final K (corrected by air and water temperature)
-    K.final <- K.air.water*(T.water + 273.15)/(T.air + 273.15) # [Lwater/Lair]
+    DeltaUaw <- (a*MW.PCB - b*nOrtho.Cl + c)*1000
+    DeltaUoa <- (-a2*MW.PCB + b2*nOrtho.Cl - c2)*1000
+    DeltaUow <- DeltaUaw + DeltaUoa
     
-    # KDOC calculation and correction
-    # PCB internal energy for the transfer of octanol-air
-    DeltaUoa <- (-a2*MW.PCB+b2*nOrtho.Cl-c2)*1000 # [J/mol]
-    # PCB internal energy for the transfer of octanol-water
-    DeltaUow <- DeltaUoa + DeltaUaw # [J/mol]
-    # Octanol-water partition coefficient corrected by water temperature
-    Kow.water.t <- 10^(Kow)*exp(-(DeltaUow/R)*(1/(T.water + 273.15)-1/T)) # [Loctanol/Lwater]
-    # DOC-water partition coefficient
-    Kdoc.t <- 0.06*Kow.water.t # [Lwater/kgdoc]
+    # Henry's law constant
+    K <- 10^(H0)*101325/(R*T)
+    K.air.water <- K*exp(-(DeltaUaw/R)*(1/(T.water + 273.15) - 1/T))
+    K.final <- K.air.water*(T.water + 273.15)/(T.air + 273.15)
     
-    # Freely dissolved water concentration calculations
-    C.PCB.water.f <- C.PCB.water/(1 + Kdoc.t*DOC/1000^2) # [ng/m3]
+    # DOC and Kow partitioning
+    Kow.water.t <- 10^(Kow)*exp(-(DeltaUow/R)*(1/(T.water + 273.15) - 1/T))
+    Kdoc.t <- 0.06*Kow.water.t
+    DOC <- 2
+    C.PCB.water.f <- Cw/(1 + Kdoc.t*DOC/1000^2)
     
-    # Air-water mass transfer calculations
-    # (1) Air side mass transfer calculations
-    # Water diffusivity in air corrected by air
-    # temperature and atmospheric pressure
-    D.water.air <- (10^(-3)*1013.25*((273.15+T.air)^1.75*((1/28.97) +
-                                                            (1/18.0152))^(0.5))/P/(20.1^(1/3) + 9.5^(1/3))^2) # [cm2/s]
-    # PCB diffusivity in air
-    D.PCB.air <- D.water.air*(MW.PCB/18.0152)^(-0.5) # [cm2/s]
-    # Water vapor exchange velocity in air (from eq. 20-15)
-    V.water.air <- 0.2*u + 0.3 # u @10 meter [cm/s]
     # Air side mass transfer
-    V.PCB.air <- V.water.air*(D.PCB.air/D.water.air)^(2/3) # [cm/s]
+    D.water.air <- (10^(-3)*1013.25*((273.15+T.air)^1.75*((1/28.97)+(1/18.0152))^(0.5))/P.atm/(20.1^(1/3)+9.5^(1/3))^2)
+    D.PCB.air <- D.water.air*(MW.PCB/18.0152)^(-0.5)
+    V.water.air <- 0.2*u + 0.3
+    V.PCB.air <- V.water.air*(D.PCB.air/D.water.air)^(2/3)
     
-    # (2) Water side mass transfer calculations
-    # Viscosity of water at water temperature
-    visc.water <- 10^(-4.5318-220.57/(149.39 - (273.15 + T.water)))
-    # Water density corrected at water temperature
-    dens.water <- (999.83952+16.945176*T.water - 7.9870401*10^-3*T.water^2
-                   - 46.170461*10^-6*3 + 105.56302*10^-9*T.water^4 -
-                     280.54253*10^-12*T.water^5)/(1 + 16.87985*10^-3*T.water)
-    # Kinematic viscosity of water
-    v.water <- visc.water/dens.water*10000 # [cm2/s]
-    # CO2 diffusivity in water at water temperature
-    diff.co2 <- 0.05019*exp(-19.51*1000/(273.15 + T.water)/R) # [cm2/s]
-    # PCB diffusivity in water 
-    D.PCB.water <- diff.co2*(MW.PCB/44.0094)^(-0.5) # [cm2/s]
-    # PCB Schmidt number in water
+    # Water side mass transfer
+    visc.water <- 10^(-4.5318-220.57/(149.39-(273.15+T.water)))
+    dens.water <- (999.83952+16.945176*T.water - 7.9870401*10^-3*T.water^2 -
+                     46.170461*10^-6*3 + 105.56302*10^-9*T.water^4 -
+                     280.54253*10^-12*T.water^5)/(1+16.87985*10^-3*T.water)
+    v.water <- visc.water/dens.water*10000
+    diff.co2 <- 0.05019*exp(-19.51*1000/(273.15+T.water)/R)
+    D.PCB.water <- diff.co2*(MW.PCB/44.0094)^(-0.5)
     Sc.PCB.water <- v.water/D.PCB.water
-    # CO2 Schmidt number in water
     Sc.co2.water <- v.water/diff.co2
-    # k600 calculations, u in [m/s], k600 originally [cm/h]
-    k600 <- (4.46 + 7.11*u)/60/60 #[cm/s]
-    # Water side mass transfer (from eq. 20-24)
+    
+    k600 <- (4.46 + 7.11*u)/60/60
     if(u > 5){
-      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5)  
+      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5)
     } else {
       V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-2/3)
-    } # [cm/s]
+    }
     
-    # Air-water mass transfer
-    mtc.PCB <- ((1/V.PCB.water+1/(V.PCB.air*K.final)))^(-1) # [cm/s]
-    # Flux calculations
-    F.PCB.aw <- c(F.PCB.aw, mtc.PCB*(C.PCB.water.f)*(60*60*24)/100) # [ng/m2/d]
-    
+    # Combined air-water mass transfer
+    mtc.PCB <- 1/(1/V.PCB.water + 1/(V.PCB.air*K.final))
+    F.PCB.aw[i] <- mtc.PCB * C.PCB.water.f * 60*60*24/100  # [ng/m2/d]
   }
   
-  F.PCB.aw
-  
+  return(F.PCB.aw)
 }
 
-# Final calculations ------------------------------------------------------
+# Compute flux matrix -----------------------------------------------------
+flux.mat <- matrix(NA, nrow = Num.Congener, ncol = Num.Samples)
+rownames(flux.mat) <- colnames(C.PCB.water)
+colnames(flux.mat) <- SampleDates
 
-Num.Congener <- length(Congener)
-
-result <- NULL
-for (i in 1:Num.Congener) {
-  result <- rbind(result, final.result(MW.PCB[i], H0.mean[i], H0.error[i], 
-                                       C.PCB.water.ave[i], C.PCB.water.error[i], nOrtho.Cl[i],
-                                       Kow.mean[i], Kow.error[i]))
+for(i in 1:Num.Congener){
+  flux.mat[i, ] <- final.result(
+    MW.PCB[i], H0[i],
+    C.PCB.water.vec = C.PCB.water[[i]],
+    nOrtho.Cl[i], Kow[i],
+    tair = tair, twater = twater,
+    u10 = u10, P = P
+  )
 }
 
-# Sum of all congeners per repetition
-final.result <- data.frame(colSums(result, na.rm = TRUE))
+# Convert to data frame
+flux.df <- as.data.frame(flux.mat)
+flux.df <- cbind(congeners = rownames(flux.df), flux.df)
+sum.row <- colSums(flux.df[ , -1], na.rm = TRUE)
 
-# Summary of the total PCBs
-mmm <- mean(final.result$colSums.result.)
-sss <- sd(final.result$colSums.result.)
-q2.5 <- quantile(final.result$colSums.result., 0.025)
-q97.5 <- quantile(final.result$colSums.result., 0.975)
-tPCBFlux <- c(mmm, sss, q2.5, q97.5)
-names(tPCBFlux) <- c("Mean (ng/m2/d)", "Std (ng/m2/d)",
-                     "2.5%CL (ng/m2/d)", "97.5%CL (ng/m2/d)")
+sum.row <- c(congeners = "tPCB", sum.row)
+flux.df <- rbind(flux.df, sum.row)
+rownames(flux.df) <- NULL
 
-print(tPCBFlux)
+# Save data ---------------------------------------------------------------
+write.csv(flux.df, "Output/Data/FoxRiver/FluxFoxRiverFoxLakeWinnebago.csv", row.names = FALSE)
 
-# Plots -------------------------------------------------------------------
-# Histogram
-{
-  hist(as.numeric(final.result[,1]), main = "Volatilization Flux Total PCBs",
-       xlab = "Volatilization Flux Total PCB (ng/m2/d)", border = "blue", col = "green",
-       xlim = c(min(as.numeric(final.result[,1])), max(as.numeric(final.result[,1]))))
-  abline(v = median(as.numeric(final.result[,1])), col = "blue", lwd = 3)
-  abline(v = quantile(as.numeric(final.result[,1]), 0.025), col = "red", lwd = 3)
-  abline(v = quantile(as.numeric(final.result[,1]), 0.975), col = "red", lwd = 3)
-  abline(v = 0, col = "black", lwd = 3)
-}
+
+
 

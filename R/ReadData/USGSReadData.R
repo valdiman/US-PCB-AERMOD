@@ -1,13 +1,19 @@
 
 # Install packages
-install.packages("dataRetrieval")
+{
+  install.packages("dataRetrieval")
+  install.packages("dplyr")
+  install.packages('sf')
+  install.packages("zoo")
+  install.packages("lubridate")
+}
 
 # Load libraries
 {
   library(dataRetrieval) # read data from USGS
-  library(dplyr)          # data manipulation
-  library(sf)             # for handling sf objects (used by read_waterdata_daily)
-  library(zoo) # for interpolation
+  library(dplyr)         # data manipulation
+  library(sf)            # for handling sf objects (used by read_waterdata_daily)
+  library(zoo)           # for interpolation
   library(lubridate)
 }
 
@@ -74,6 +80,9 @@ fx <- fx %>%
 fx <- fx %>%
   mutate(temp_final = coalesce(temp, temp_pred_seasonal)) %>%
   select(-temp, -temp_pred_seasonal)
+
+# Modify incorrectly predicted values
+fx$temp_final[c(21,22)] <- 20
 
 # save
 write.csv(fx, "Data/FoxRiver/FoxRiver_temp.csv", row.names = FALSE)
