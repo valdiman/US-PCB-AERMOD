@@ -30,6 +30,10 @@
   flux_fr <- rbind(as, lw, rm, o1, oa, ob, oc, o3)
 }
 
+# Save data
+write.csv(flux_fr, "Output/Data/FoxRiver/SummaryFluxFoxRiver.csv",
+          row.names = FALSE)
+
 # General plot
 # Convert SampleDate to Date format
 flux_fr$SampleDate <- as.Date(flux_fr$SampleDate, format = "%Y-%m-%d")
@@ -63,7 +67,7 @@ p.flux.tpcb <- ggplot(flux_fr, aes(x = SampleDate, y = tPCB, color = SampleSite,
   scale_x_date(
     date_breaks = "6 months", date_labels = "%b-%Y", expand = c(0.02, 0.02)) +
   xlab(expression(bold(""))) +
-  labs(y = expression(bold(Sigma*"PCB Flux (pg/m"^2*"/d)")), color = "Sample Site",
+  labs(y = expression(bold(Sigma*"PCB Flux (ng/m"^2*"/d)")), color = "Sample Site",
        shape = "Sample Site", fill = "Sample Site") +
   theme_bw() +
   theme(
@@ -102,7 +106,7 @@ p.flux.tpcb.o1 <- ggplot(flux_fr_o1, aes(x = SampleDate, y = tPCB, color = "Oper
   ) +
   xlab(expression(bold(""))) +
   labs(
-    y = expression(bold(Sigma*"PCB Flux (pg/m"^2*"/d)")),
+    y = expression(bold(Sigma*"PCB Flux (ng/m"^2*"/d)")),
     color = "Sample Site",
     shape = "Sample Site",
     fill = "Sample Site"
@@ -143,7 +147,7 @@ p.flux.tpcb.oa <- ggplot(flux_fr_oa, aes(x = SampleDate, y = tPCB, color = "Oper
   ) +
   xlab(expression(bold(""))) +
   labs(
-    y = expression(bold(Sigma*"PCB Flux (pg/m"^2*"/d)")),
+    y = expression(bold(Sigma*"PCB Flux (ng/m"^2*"/d)")),
     color = "Sample Site",
     shape = "Sample Site",
     fill = "Sample Site"
@@ -184,7 +188,7 @@ p.flux.tpcb.ob <- ggplot(flux_fr_ob, aes(x = SampleDate, y = tPCB, color = "Oper
   ) +
   xlab(expression(bold(""))) +
   labs(
-    y = expression(bold(Sigma*"PCB Flux (pg/m"^2*"/d)")),
+    y = expression(bold(Sigma*"PCB Flux (ng/m"^2*"/d)")),
     color = "Sample Site",
     shape = "Sample Site",
     fill = "Sample Site"
@@ -225,7 +229,7 @@ p.flux.tpcb.oc <- ggplot(flux_fr_oc, aes(x = SampleDate, y = tPCB, color = "Oper
   ) +
   xlab(expression(bold(""))) +
   labs(
-    y = expression(bold(Sigma*"PCB Flux (pg/m"^2*"/d)")),
+    y = expression(bold(Sigma*"PCB Flux (ng/m"^2*"/d)")),
     color = "Sample Site",
     shape = "Sample Site",
     fill = "Sample Site"
@@ -266,7 +270,7 @@ p.flux.tpcb.o3 <- ggplot(flux_fr_o3, aes(x = SampleDate, y = tPCB, color = "Oper
   ) +
   xlab(expression(bold(""))) +
   labs(
-    y = expression(bold(Sigma*"PCB Flux (pg/m"^2*"/d)")),
+    y = expression(bold(Sigma*"PCB Flux (ng/m"^2*"/d)")),
     color = "Sample Site",
     shape = "Sample Site",
     fill = "Sample Site"
@@ -307,7 +311,7 @@ p.flux.tpcb.lw <- ggplot(flux_fr_lw, aes(x = SampleDate, y = tPCB, color = "Lake
   ) +
   xlab(expression(bold(""))) +
   labs(
-    y = expression(bold(Sigma*"PCB Flux (pg/m"^2*"/d)")),
+    y = expression(bold(Sigma*"PCB Flux (ng/m"^2*"/d)")),
     color = "Sample Site",
     shape = "Sample Site",
     fill = "Sample Site"
@@ -348,7 +352,7 @@ p.flux.tpcb.as <- ggplot(flux_fr_as, aes(x = SampleDate, y = tPCB, color = "Alex
   ) +
   xlab(expression(bold(""))) +
   labs(
-    y = expression(bold(Sigma*"PCB Flux (pg/m"^2*"/d)")),
+    y = expression(bold(Sigma*"PCB Flux (ng/m"^2*"/d)")),
     color = "Sample Site",
     shape = "Sample Site",
     fill = "Sample Site"
@@ -390,7 +394,7 @@ p.flux.tpcb.rm <- ggplot(flux_fr_rm, aes(x = SampleDate, y = tPCB, color = "Fox 
   ) +
   xlab(expression(bold(""))) +
   labs(
-    y = expression(bold(Sigma*"PCB Flux (pg/m"^2*"/d)")),
+    y = expression(bold(Sigma*"PCB Flux (ng/m"^2*"/d)")),
     color = "Sample Site",
     shape = "Sample Site",
     fill = "Sample Site"
