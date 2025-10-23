@@ -30,4 +30,5 @@
 *.gpkg
 *.qgz
 *.qpt
+*.jpg
 rosm.cache/
