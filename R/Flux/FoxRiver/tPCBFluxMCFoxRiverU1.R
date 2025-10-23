@@ -96,6 +96,7 @@ cp <- data.frame(
 
 # Water concentrations and meteorological data ----------------------------
 # Read data from Data Folder
+# Concentration in pg/L [ng/m3]
 fx <- read.csv("Data/FoxRiver/FoxRiver_env.csv")
 fx.wt <- read.csv("Data/FoxRiver/FoxRiver_temp.csv")
 
@@ -113,12 +114,12 @@ Latitude <- fx.site$Latitude
 Longitude <- fx.site$Longitude
 
 # Environmental conditions
-tair <- fx.site$air_temp
-twater <- fx.site$wt
-u <- fx.site$wind_speed
+tair <- fx.site$air_temp # [C]
+twater <- fx.site$wt # [C]
+u <- fx.site$wind_speed # [m/s]
 # Modify u @6.7 m to @10 m
-u10 <- (10.4/(log(6.7) + 8.1))*u
-P <- fx.site$air_pressure
+u10 <- (10.4/(log(6.7) + 8.1)) * u # [m/s]
+P <- fx.site$air_pressure # [atm]
 
 Num.Congener <- ncol(C.PCB.water)
 Num.Samples <- nrow(fx.site) 
@@ -156,14 +157,14 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     # DOC and Kow partitioning
     Kow.water.t <- 10^(Kow)*exp(-(DeltaUow/R)*(1/(T.water + 273.15) - 1/T))
     Kdoc.t <- 0.06*Kow.water.t
-    DOC <- 2
-    C.PCB.water.f <- Cw/(1 + Kdoc.t*DOC/1000^2)
+    DOC <- 2 # [mg/L]
+    C.PCB.water.f <- Cw/(1 + Kdoc.t*DOC/1000^2) # [pg/L] or [ng/m3]
     
     # Air side mass transfer
     D.water.air <- (10^(-3)*1013.25*((273.15+T.air)^1.75*((1/28.97)+(1/18.0152))^(0.5))/P.atm/(20.1^(1/3)+9.5^(1/3))^2)
     D.PCB.air <- D.water.air*(MW.PCB/18.0152)^(-0.5)
     V.water.air <- 0.2*u + 0.3
-    V.PCB.air <- V.water.air*(D.PCB.air/D.water.air)^(2/3)
+    V.PCB.air <- V.water.air*(D.PCB.air/D.water.air)^(2/3) # [m/d]
     
     # Water side mass transfer
     visc.water <- 10^(-4.5318-220.57/(149.39-(273.15+T.water)))
@@ -178,13 +179,13 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     
     k600 <- (4.46 + 7.11*u)/60/60
     if(u > 5){
-      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5)
+      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5) # [m/d]
     } else {
-      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-2/3)
+      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-2/3) # [m/d]
     }
     
     # Combined air-water mass transfer
-    mtc.PCB <- 1/(1/V.PCB.water + 1/(V.PCB.air*K.final))
+    mtc.PCB <- 1/(1/V.PCB.water + 1/(V.PCB.air*K.final)) # [m/d]
     F.PCB.aw[i] <- mtc.PCB * C.PCB.water.f * 60*60*24/100  # [ng/m2/d]
   }
   
@@ -223,7 +224,3 @@ flux.df <- cbind(
 # Save data ---------------------------------------------------------------
 write.csv(flux.df, "Output/Data/FoxRiver/FluxFoxRiverOperableUnit3.csv",
           row.names = FALSE)
-
-
-
-
