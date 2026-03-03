@@ -42,11 +42,12 @@ stations_nearby <- stations %>%
 fx.station <- stations[stations$usaf == "726450", ]
 
 # Read For River Data
-fx <- read.csv("Data/FoxRiver/FoxRiver.csv")
-fx$SampleDate <- as.Date(fx$SampleDate, format = "%m/%d/%Y")
+fxr <- read.csv("Data/FoxRiver/FoxRiver.csv")
+fxr$SampleDate <- as.Date(fxr$SampleDate)
 
-# Determine years to download
-years_to_download <- unique(year(fx$SampleDate))
+# Get unique years needed
+years_needed <- unique(format(fxr$SampleDate, "%Y"))
+years_needed
 
 # NOAA station IDs
 usaf <- as.character(fx.station$usaf[1])
