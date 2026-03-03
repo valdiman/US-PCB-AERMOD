@@ -1,4 +1,5 @@
 # R code to download and format data from Pangaea
+# Select the locations
 
 # Packages and libraries needed -------------------------------------------------------------------
 # Install packages
@@ -59,14 +60,81 @@ colnames(d) <- new_col_names
 # See few rows and columns
 head(d)
 
-# Select Fox River data ---------------------------------------------------
-fr <- d[d$LocationName == 'Fox River', ]
+# Select Anacostia River data ---------------------------------------------
+anr <- d[d$LocationName == 'Anacostia River', ]
 # Remove metadata
-fr <- fr[ , !(names(fr) %in% c("Source", "SampleID", "EPARegion", "StateSampled",
+ar <- anr[ , !(names(anr) %in% c("Source", "SampleID", "EPARegion", "StateSampled",
                                "PhaseMeasured", "EPAMethod", "AroclorCongener"))]
-# Remove Aroclor and total PCB
-fr <- fr[ , -c(111:118)]
-
-# Save Fox River data -----------------------------------------------------
-write.csv(fr, file = "Data/FoxRiver/FoxRiver.csv",
+# Remove non-reported values
+anr <- anr[, -c(7:117)]
+# Save data
+write.csv(anr, file = "Data/AnacostiaRiver/AnacostiaRiver.csv",
           row.names = FALSE)
+
+# Select Fox River data ---------------------------------------------------
+fxr <- d[d$LocationName == 'Fox River', ]
+# Remove metadata
+fxr <- fxr[ , !(names(fxr) %in% c("Source", "SampleID", "EPARegion", "StateSampled",
+                               "PhaseMeasured", "EPAMethod", "AroclorCongener"))]
+# Remove Aroclor
+fxr <- fxr[ , -c(111:117)]
+# Save Fox River data
+write.csv(fxr, file = "Data/FoxRiver/FoxRiver.csv",
+          row.names = FALSE)
+
+# Select Housatonic River data ---------------------------------------------
+hor <- d[d$LocationName == 'Housatonic River', ]
+# Remove metadata
+hor <- hor[ , !(names(hor) %in% c("Source", "SampleID", "EPARegion", "StateSampled",
+                                  "PhaseMeasured", "EPAMethod", "AroclorCongener"))]
+# Remove non-reported values
+hor <- hor[ , -c(7:117)]
+# Save Fox River data
+write.csv(hor, file = "Data/HousatonicRiver/HousatonicRiver.csv",
+          row.names = FALSE)
+
+# Select Hudson River data ---------------------------------------------
+hur <- d[d$LocationName == 'Hudson River', ]
+# Remove metadata
+hur <- hur[ , !(names(hur) %in% c("Source", "SampleID", "EPARegion", "StateSampled",
+                                  "PhaseMeasured", "EPAMethod", "AroclorCongener"))]
+# Remove Aroclor
+hur <- hur[ , -c(111:117)]
+# Save Fox River data
+write.csv(hur, file = "Data/HudsonRiverAlbany/HudsonRiver.csv",
+          row.names = FALSE)
+
+# Select Kalamazoo River data ---------------------------------------------
+kar <- d[d$LocationName == 'Kalamazoo River', ]
+# Remove metadata
+kar <- kar[ , !(names(kar) %in% c("Source", "SampleID", "EPARegion", "StateSampled",
+                                  "PhaseMeasured", "EPAMethod", "AroclorCongener"))]
+# Remove non-reported values
+kar <- kar[ , -c(7:117)]
+# Save Fox River data
+write.csv(kar, file = "Data/Kalamazoo/KalamazooRiver.csv",
+          row.names = FALSE)
+
+# Select Passaic River data ---------------------------------------------
+par <- d[d$LocationName == 'Passaic River', ]
+# Remove metadata
+par <- par[ , !(names(par) %in% c("Source", "SampleID", "EPARegion", "StateSampled",
+                                  "PhaseMeasured", "EPAMethod", "AroclorCongener"))]
+# Remove Aroclor
+par <- par[ , -c(111:117)]
+# Save Fox River data
+write.csv(par, file = "Data/PassaicRiver/PassaicRiver.csv",
+          row.names = FALSE)
+
+# Select Spokane River data ---------------------------------------------
+spr <- d[d$LocationName == 'Spokane River', ]
+# Remove metadata
+spr <- spr[ , !(names(spr) %in% c("Source", "SampleID", "EPARegion", "StateSampled",
+                                  "PhaseMeasured", "EPAMethod", "AroclorCongener"))]
+# Remove Aroclor
+spr <- spr[ , -c(111:117)]
+# Save Fox River data
+write.csv(spr, file = "Data/Spokane/SpokaneRiver.csv",
+          row.names = FALSE)
+
+
