@@ -10,7 +10,9 @@ dir.create("R/Flux/Kalamazoo")
 dir.create("R/Flux/PassaicRiver")
 dir.create("R/Flux/Spokane")
 
-dir.create("R/ReadPCBData")
+dir.create("R/ReadData")
+dir.create("R/ReadData/NOAA")
+dir.create("R/ReadData/USGS")
 
 dir.create("R/Summary")
 dir.create("R/Summary/AnacostiaRiver")
