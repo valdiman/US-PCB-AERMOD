@@ -41,7 +41,7 @@ stations_nearby <- stations %>%
 # Select the nearest major station (Austin Straubel Int. Airport)
 fxr.station <- stations[stations$usaf == "726450", ]
 
-# Read For River Data
+# Read Fox River Data
 fxr <- read.csv("Data/FoxRiver/FoxRiver.csv")
 fxr$SampleDate <- as.Date(fxr$SampleDate)
 

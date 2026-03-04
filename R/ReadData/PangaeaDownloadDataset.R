@@ -63,7 +63,7 @@ head(d)
 # Select Anacostia River data ---------------------------------------------
 anr <- d[d$LocationName == 'Anacostia River', ]
 # Remove metadata
-ar <- anr[ , !(names(anr) %in% c("Source", "SampleID", "EPARegion", "StateSampled",
+anr <- anr[ , !(names(anr) %in% c("Source", "SampleID", "EPARegion", "StateSampled",
                                "PhaseMeasured", "EPAMethod", "AroclorCongener"))]
 # Remove non-reported values
 anr <- anr[, -c(7:117)]
