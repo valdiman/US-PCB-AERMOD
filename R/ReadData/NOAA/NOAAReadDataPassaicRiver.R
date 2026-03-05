@@ -26,7 +26,7 @@ install.packages("geosphere")
 # the most recent data in all cases. A noaaWeather package is planned as a
 # replacement but the functions will not be interchangeable.
 
-# Kalamazoo River coordinates (Newark, NJ)
+# Passaic River coordinates (Newark, NJ)
 site_lat <- 40.7357
 site_lon <- -74.1724
 

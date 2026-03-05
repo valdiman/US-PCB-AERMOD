@@ -19,7 +19,7 @@
 }
 
 # Read data ---------------------------------------------------------------
-# From Data Folder, FoxRiver.csv
+# From Data Folder, Fox River.csv
 fxr <- read.csv("Data/FoxRiver/FoxRiver.csv")
 
 # Convert from "m/d/YYYY" to Date
