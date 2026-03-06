@@ -67,10 +67,10 @@ temp <- read_waterdata_daily(
 # Clean USGS data
 temp_values <- temp %>%
   st_drop_geometry() %>%
-  mutate(time = as.Date(time)) %>%   # <-- THIS is likely missing
+  mutate(time = as.Date(time)) %>%
   select(time, value)
 
-# Merge USGS temperature into fx
+# Merge USGS temperature into fxr
 fxr <- fxr %>%
   left_join(temp_values, by = c("SampleDate" = "time")) %>%
   mutate(temp = value) %>%

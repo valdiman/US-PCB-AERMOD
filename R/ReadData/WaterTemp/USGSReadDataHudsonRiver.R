@@ -1,3 +1,5 @@
+# -------------------------------------------------------------------
+# Code use to retrieve eater temperature from a USGS station
 
 # Install packages
 {
@@ -50,7 +52,7 @@ sites_near_5km <- sites %>%
   select(monitoring_location_id, monitoring_location_name, lat, lon, dist_km)
 
 # Define USGS site and parameter ------------------------------------------
-site <- gsub("USGS-", "", sites_near_5km$monitoring_location_id[6])
+site <- gsub("USGS-", "", sites_near_5km$monitoring_location_id[6]) # 6th station has data
 paramtemp <- "00010"     # water temperature, °C
 
 # Fetch daily water temperature -------------------------------------------
@@ -64,7 +66,7 @@ temp <- read_waterdata_daily(
 # Clean USGS data
 temp_values <- temp %>%
   st_drop_geometry() %>%
-  mutate(time = as.Date(time)) %>%   # <-- THIS is likely missing
+  mutate(time = as.Date(time)) %>%
   select(time, value)
 
 # Merge USGS temperature into fx

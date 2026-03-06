@@ -20,8 +20,8 @@
 #   T_water_pred = β·T_clim + γ·(T_air − T_clim)
 #
 # Model parameters:
-#   β = 0.8  (scales seasonal baseline signal)
-#   γ = 0.6  (scales short-term air temperature anomalies)
+#   β = 1.0  (scales seasonal baseline signal)
+#   γ = 0.9  (scales short-term air temperature anomalies)
 #
 # Air temperature data source:
 #   Daymet v4 daily gridded meteorological data
@@ -36,7 +36,7 @@
 # T_water = β·T_clim(DOY) + γ·(T_air − T_clim(DOY)),
 # where T_air = (Tmax + Tmin)/2 from Daymet,
 # T_clim is the 1980–2019 daily climatology,
-# β = 0.8 and γ = 0.6.
+# β = 1.0 and γ = 0.9.
 # -------------------------------------------------------------------
 # Install packages
 {
@@ -69,7 +69,7 @@ find_single_col <- function(df, pattern, what = "column") {
 }
 
 # ---- 1. Read data ----
-anr <- read.csv("Data/AnacostiaRiver/AnacostiaRiver.csv", stringsAsFactors = FALSE)
+anr <- read.csv("Data/AnacostiaRiver/AnacostiaRiver_env.csv", stringsAsFactors = FALSE)
 anr$SampleDate <- as.Date(anr$SampleDate)   # ensure Date
 
 # Keep only 2000+
@@ -130,8 +130,8 @@ air <- wide_act %>%
   select(date, doy, tair)
 
 # ---- 4. Hybrid water temperature model ----
-beta  <- 0.8
-gamma <- 0.6
+beta  <- 1.0
+gamma <- 0.9
 
 # Ensure SampleDate is Date and create doy before joins
 anr2 <- anr %>%
@@ -146,12 +146,12 @@ out <- anr2 %>%
   mutate(
     baseline    = beta * tair_clim,
     anomaly     = tair - tair_clim,
-    pred_temp_C = baseline + gamma * anomaly
+    pred_water_temp_C = baseline + gamma * anomaly
   )
 
 # keep original hor columns + predicted temperature
 out_pred <- out %>%
-  select(all_of(names(anr)), pred_temp_C)
+  select(all_of(names(anr)), pred_water_temp_C)
 
 # ---- 5. Save result ----
-write.csv(out_pred, "Data/AnacostiaRiver/AnacostiaRiver_temp.csv", row.names = FALSE)
+write.csv(out_pred, "Data/AnacostiaRiver/AnacostiaRiver_env.csv", row.names = FALSE)
