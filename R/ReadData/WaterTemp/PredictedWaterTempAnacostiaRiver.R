@@ -38,12 +38,23 @@
 # T_clim is the 1980–2019 daily climatology,
 # β = 0.8 and γ = 0.6.
 # -------------------------------------------------------------------
+# Install packages
+{
+  install.packages("dplyr")
+  install.packages("lubridate")
+  install.packages("daymetr")
+  install.packages("tidyr")
+  install.packages("readr")
+}
 
-library(daymetr)
-library(dplyr)
-library(tidyr)
-library(lubridate)
-library(readr)
+# Load libraries
+{
+  library(daymetr)
+  library(dplyr)
+  library(tidyr)
+  library(lubridate)
+  library(readr)
+}
 
 # Helper: find a single column name matching a pattern (or throw informative error)
 find_single_col <- function(df, pattern, what = "column") {

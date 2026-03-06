@@ -1,3 +1,5 @@
+# -------------------------------------------------------------------
+# Code use to retrieve eater temperature from a USGS station
 
 # Install packages
 {
@@ -50,13 +52,13 @@ sites_near_5km <- sites %>%
   select(monitoring_location_id, monitoring_location_name, lat, lon, dist_km)
 
 # Define USGS site and parameter ------------------------------------------
-#sitefoxN2 <- "040851385" # FOX RIVER AT OIL TANK DEPOT AT GREEN BAY, WI
-sitefoxN2 <- gsub("USGS-", "", sites_near_5km$monitoring_location_id[1])
+# FOX RIVER AT OIL TANK DEPOT AT GREEN BAY, WI
+site <- gsub("USGS-", "", sites_near_5km$monitoring_location_id[1])
 paramtemp <- "00010"     # water temperature, °C
 
 # Fetch daily water temperature -------------------------------------------
 temp <- read_waterdata_daily(
-  monitoring_location_id = paste("USGS", sitefoxN2, sep = "-"),
+  monitoring_location_id = paste("USGS", site, sep = "-"),
   parameter_code = paramtemp,
   statistic_id = "00003",  # mean daily values
   time = c(as.character(min(fxr$SampleDate)), as.character(max(fxr$SampleDate)))

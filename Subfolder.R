@@ -1,6 +1,10 @@
 # Create subfolder within the current working directory
 dir.create("R")
 
+dir.create("R/ReadData")
+dir.create("R/ReadData/NOAA")
+dir.create("R/ReadData/WaterTemp")
+
 dir.create("R/Flux")
 dir.create("R/Flux/AnacostiaRiver")
 dir.create("R/Flux/FoxRiver")
@@ -9,10 +13,6 @@ dir.create("R/Flux/HousatonicRiver")
 dir.create("R/Flux/Kalamazoo")
 dir.create("R/Flux/PassaicRiver")
 dir.create("R/Flux/Spokane")
-
-dir.create("R/ReadData")
-dir.create("R/ReadData/NOAA")
-dir.create("R/ReadData/USGS")
 
 dir.create("R/Summary")
 dir.create("R/Summary/AnacostiaRiver")
