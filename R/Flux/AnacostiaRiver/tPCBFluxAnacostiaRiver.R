@@ -1,4 +1,4 @@
-# Code to estimate total PCB fluxes from Fox River
+# Code to estimate total PCB fluxes from Anacostia River
 # using 20xx and 20xx water samples
 # The code estimate the flux of each congener, and
 # sum them to get total PCB

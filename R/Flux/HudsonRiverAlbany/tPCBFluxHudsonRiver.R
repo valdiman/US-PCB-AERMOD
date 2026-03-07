@@ -1,4 +1,4 @@
-# Code to estimate total PCB fluxes from Fox River
+# Code to estimate total PCB fluxes from Hudson River, Albany
 # using 20xx and 20xx water samples
 # The code estimate the flux of each congener, and
 # sum them to get total PCB
@@ -97,14 +97,15 @@ cp <- data.frame(
 # Water concentrations and meteorological data ----------------------------
 # Read data from Data Folder
 # Concentration in pg/L [ng/m3]
-fx <- read.csv("Data/FoxRiver/FoxRiver_env.csv")
-fx.wt <- read.csv("Data/FoxRiver/FoxRiver_temp.csv")
-
-# Add water temperature to fx
-fx$wt <- fx.wt$temp_final
+hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiver_env.csv")
 
 # Select Site Name
-fx.site <- fx[fx$SiteName == "Lake Winnebago", ]
+hur.site <- hur[hur$SiteID %in% c(
+  "WCPCB-HUD004",
+  "WCPCB-HUD016",
+  "WCPCB-HUD005",
+  "WCPCB-HUD001",
+  "WCPCB-HUD002"), ]
 
 # Calculate averages
 C.PCB.water <- fx.site[, 7:110]
