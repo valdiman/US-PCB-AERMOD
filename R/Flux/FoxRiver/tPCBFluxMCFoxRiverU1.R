@@ -98,7 +98,7 @@ cp <- data.frame(
 # Read data from Data Folder
 # Concentration in pg/L [ng/m3]
 fx <- read.csv("Data/FoxRiver/FoxRiver_env.csv")
-fx.wt <- read.csv("Data/FoxRiver/FoxRiver_temp.csv")
+#fx.wt <- read.csv("Data/FoxRiver/FoxRiver_temp.csv")
 
 # Add water temperature to fx
 fx$wt <- fx.wt$temp_final
