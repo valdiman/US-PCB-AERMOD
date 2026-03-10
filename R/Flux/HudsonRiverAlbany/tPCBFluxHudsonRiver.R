@@ -95,28 +95,25 @@ cp <- data.frame(
 # Water concentrations and meteorological data ----------------------------
 # Read data from Data Folder
 # Concentration in pg/L [ng/m3]
-hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiver_env.csv")
+hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiver_envV2.csv")
 
-# Select Site Name
-hur.site <- hur[hur$SiteName == "Lake Winnebago", ]
-
-# Calculate averages
-C.PCB.water <- hur.site[, 7:110]
-SampleSite <- hur.site$SiteName
-SampleDate <- hur.site$SampleDate
-Latitude <- hur.site$Latitude
-Longitude <- hur.site$Longitude
+# Calculate
+C.PCB.water <- hur[, 7:110]
+SampleSite <- hur$SiteName
+SampleDate <- hur$SampleDate
+Latitude <- hur$Latitude
+Longitude <- hur$Longitude
 
 # Environmental conditions
-tair <- hur.site$air_temp # [C]
-twater <- hur.site$pred_water_temp_C # [C]
-u <- hur.site$wind_speed # [m/s]
+tair <- hur$air_temp # [C]
+twater <- hur$pred_water_temp_C # [C]
+u <- hur$wind_speed # [m/s]
 # Modify u @6.7 m to @10 m
 u10 <- (10.4/(log(6.7) + 8.1)) * u # [m/s]
-P <- hur.site$air_pressure # [atm]
+P <- hur$air_pressure # [atm]
 
 Num.Congener <- ncol(C.PCB.water)
-Num.Samples <- nrow(hur.site) 
+Num.Samples <- nrow(hur) 
 
 # Flux calculations -------------------------------------------------------
 
@@ -187,7 +184,7 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
 }
 
 # Compute flux matrix -----------------------------------------------------
-flux.mat <- matrix(NA, nrow = nrow(hur.site), ncol = ncol(C.PCB.water))
+flux.mat <- matrix(NA, nrow = nrow(hur), ncol = ncol(C.PCB.water))
 colnames(flux.mat) <- colnames(C.PCB.water)
 
 for(i in 1:ncol(C.PCB.water)){
@@ -195,10 +192,10 @@ for(i in 1:ncol(C.PCB.water)){
     MW.PCB[i], H0[i],
     C.PCB.water.vec = C.PCB.water[[i]],
     nOrtho.Cl[i], Kow[i],
-    tair = hur.site$air_temp,
-    twater = hur.site$pred_water_temp_C,
-    u10 = (10.4/(log(6.7) + 8.1))*hur.site$wind_speed,
-    P = hur.site$air_pressure
+    tair = hur$air_temp,
+    twater = hur$pred_water_temp_C,
+    u10 = (10.4/(log(6.7) + 8.1))*hur$wind_speed,
+    P = hur$air_pressure
   )
 }
 
