@@ -15,7 +15,7 @@
 
 # Read data ---------------------------------------------------------------
 # Read water concentrations
-spr <- read.csv("Data/Spokane/SpokaneRiver_env.csv")
+spr <- read.csv("Data/Spokane/SpokaneRiverMeteoWaterTempFlow.csv")
 
 # Remove Site
 spr.site <- spr[!spr$SiteID %in% c(
@@ -170,7 +170,7 @@ ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
 
 # Save data ---------------------------------------------------------------
 # To be used for the flux calculations
-write.csv(spr.site, "Data/Spokane/SpokaneRiver_envV2.csv",
+write.csv(spr.site, "Data/Spokane/SpokaneRiverMeteoWaterTempFlowConcVF.csv",
           row.names = FALSE)
 
 

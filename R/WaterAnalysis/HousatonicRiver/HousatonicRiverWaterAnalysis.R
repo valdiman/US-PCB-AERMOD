@@ -16,7 +16,7 @@
 
 # Read data ---------------------------------------------------------------
 # Read water concentrations
-hor <- read.csv("Data/HousatonicRiver/HousatonicRiver_env.csv")
+hor <- read.csv("Data/HousatonicRiver/HousatonicRiverMeteoWaterTempFlow.csv")
 
 # select samples nearby Pittsfield, MA
 hor.site <- hor[hor$SiteID %in% c(
@@ -24,9 +24,6 @@ hor.site <- hor[hor$SiteID %in% c(
   "WCPCB-HOU018", "WCPCB-HOU019",
   "WCPCB-HOU020", "WCPCB-HOU022",
   "WCPCB-HOU024"), ]
-
-# Change date format
-hor.site$SampleDate <- as.Date(hor.site$SampleDate, format = "%m/%d/%y")
 
 # Remove samples until 2006
 hor.site <- hor.site[hor.site$SampleDate >= as.Date("2006-01-01"), ]
@@ -172,7 +169,11 @@ ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
         axis.ticks.length = unit(0.2, "cm"))
 
 # Save data ---------------------------------------------------------------
+# remove higher value
+hor.site.2 <- hor.site %>%
+  filter(tPCB < max(tPCB, na.rm = TRUE))
+
 # To be used for the flux calculations
-write.csv(hor.site, "Data/HousatonicRiver/HousatonicRiver_envV2.csv",
+write.csv(hor.site.2, "Data/HousatonicRiver/HousatonicRiverMeteoWaterTempFlowConcV0.csv",
           row.names = FALSE)
 

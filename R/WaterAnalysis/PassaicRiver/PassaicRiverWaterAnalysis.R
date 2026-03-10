@@ -15,7 +15,7 @@
 
 # Read data ---------------------------------------------------------------
 # Read water concentrations
-par <- read.csv("Data/PassaicRiver/PassaicRiver_env.csv")
+par <- read.csv("Data/PassaicRiver/PassaicRiverMeteoWaterTemp.csv")
 
 # Select samples nearby Newark
 # South
@@ -177,6 +177,10 @@ par_subset.2 <- par_subset %>%
 
 # Save data ---------------------------------------------------------------
 # To be used for the flux calculations
-write.csv(par_subset.2, "Data/PassaicRiver/PassaicRiver_envV2.csv",
+# remove higher value
+par_subset.2 <- par_subset %>%
+  filter(tPCB < max(tPCB, na.rm = TRUE))
+
+write.csv(par_subset.2, "Data/PassaicRiver/PassaicRiverMeteoWaterTempConcVF.csv",
           row.names = FALSE)
 

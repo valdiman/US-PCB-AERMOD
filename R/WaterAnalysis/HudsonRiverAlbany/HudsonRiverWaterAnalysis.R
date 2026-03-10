@@ -15,7 +15,7 @@
 
 # Read data ---------------------------------------------------------------
 # Read water concentrations
-hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiver_env.csv")
+hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiverMeteoWaterTemp.csv")
 
 # Select Site Name near Albany
 hur.site <- hur[hur$SiteID %in% c(
@@ -163,9 +163,10 @@ ggplot(tpcb, aes(x = format(SampleDate), y = tPCB)) +
         axis.ticks.length = unit(0.2, "cm"))
 
 # Save data ---------------------------------------------------------------
+# remove higher value
+hur.site.2 <- hur.site %>%
+  filter(tPCB < max(tPCB, na.rm = TRUE))
+
 # To be used for the flux calculations
-write.csv(hur.site, "Data/HudsonRiverAlbany/HudsonRiver_envV2.csv",
+write.csv(hur.site.2, "Data/HudsonRiverAlbany/HudsonRiverMeteoWaterTempConcVF.csv",
           row.names = FALSE)
-
-
-

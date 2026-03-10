@@ -22,7 +22,7 @@
 
 # Read data ---------------------------------------------------------------
 # From Data Folder, Housatonic River.csv
-hor <- read.csv("Data/HousatonicRiver/HousatonicRiver_env.csv")
+hor <- read.csv("Data/HousatonicRiver/HousatonicRiverMeteoWaterTemp.csv")
 
 # Convert from "m/d/YYYY" to Date
 hor$SampleDate <- as.Date(hor$SampleDate)
@@ -80,5 +80,5 @@ hor <- hor %>%
             by = c("SampleDate" = "time"))
 
 # save
-write.csv(hor, "Data/HousatonicRiver/HousatonicRiver_env.csv", row.names = FALSE)
+write.csv(hor, "Data/HousatonicRiver/HousatonicRiverMeteoWaterTempFlow.csv", row.names = FALSE)
 

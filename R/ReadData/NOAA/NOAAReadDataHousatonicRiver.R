@@ -96,5 +96,5 @@ hor <- hor %>%
   left_join(weather_daily, by = c("SampleDate" = "date"))
 
 # Save
-write.csv(hor, "Data/HousatonicRiver/HousatonicRiver_env.csv", row.names = FALSE)
+write.csv(hor, "Data/HousatonicRiver/HousatonicRiverMeteo.csv", row.names = FALSE)
 

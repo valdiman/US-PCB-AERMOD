@@ -19,7 +19,8 @@ ar$A1248 <- ar$A1248 / sum(ar$A1248)
 ar$A1260 <- ar$A1260 / sum(ar$A1260)
 
 # Read Anacostia River
-anr <- read.csv("Data/AnacostiaRiver/AnacostiaRiver_envV2.csv", stringsAsFactors = FALSE)
+anr <- read.csv("Data/AnacostiaRiver/AnacostiaRiverMeteoWaterTempConcV0.csv",
+                stringsAsFactors = FALSE)
 
 # Aroclor 1248
 anr_matrix <- outer(anr$tPCB, ar$A1248)
@@ -32,10 +33,12 @@ colnames(anr_df) <- ar$Congener
 final_anr <- cbind(anr, anr_df)
 
 # save
-write.csv(final_anr, "Data/AnacostiaRiver/AnacostiaRiver_envV3.csv", row.names = FALSE)
+write.csv(final_anr, "Data/AnacostiaRiver/AnacostiaRiverMeteoWaterTempConcVF.csv",
+          row.names = FALSE)
 
 # Read Kalamazoo River
-kar <- read.csv("Data/Kalamazoo/KalamazooRiver_envV2.csv", stringsAsFactors = FALSE)
+kar <- read.csv("Data/Kalamazoo/KalamazooRiverMeteoWaterTempFlowConV0.csv",
+                stringsAsFactors = FALSE)
 
 # Aroclor 1016 
 kar_matrix <- outer(kar$tPCB, ar$A1016)
@@ -48,10 +51,12 @@ colnames(kar_df) <- ar$Congener
 final_kar <- cbind(kar, kar_df)
 
 # save
-write.csv(final_kar, "Data/Kalamazoo/KalamazooRiver_envV3.csv", row.names = FALSE)
+write.csv(final_kar, "Data/Kalamazoo/KalamazooRiverMeteoWaterTempFlowConVF.csv",
+          row.names = FALSE)
 
 # Read Housatonic River
-hor <- read.csv("Data/HousatonicRiver/housatonicRiver_envV2.csv", stringsAsFactors = FALSE)
+hor <- read.csv("Data/HousatonicRiver/housatonicRiverMeteoWaterTempFlowConcV0.csv",
+                stringsAsFactors = FALSE)
 
 # Aroclor 1260
 hor_matrix <- outer(hor$tPCB, ar$A1260)
@@ -64,5 +69,6 @@ colnames(hor_df) <- ar$Congener
 final_hor <- cbind(hor, hor_df)
 
 # save
-write.csv(final_hor, "Data/housatonicRiver/housatonicRiver_envV3.csv", row.names = FALSE)
+write.csv(final_hor, "Data/housatonicRiver/housatonicRiverMeteoWaterTempFlowConcVF.csv",
+          row.names = FALSE)
 

@@ -94,5 +94,5 @@ hur <- hur %>%
   left_join(weather_daily, by = c("SampleDate" = "date"))
 
 # Save
-write.csv(hur, "Data/HudsonRiverAlbany/HudsonRiver_env.csv", row.names = FALSE)
+write.csv(hur, "Data/HudsonRiverAlbany/HudsonRiverMeteo.csv", row.names = FALSE)
 

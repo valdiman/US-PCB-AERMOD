@@ -16,7 +16,7 @@
 
 # Read data ---------------------------------------------------------------
 # Read water concentrations
-kar <- read.csv("Data/Kalamazoo/KalamazooRiver_env.csv")
+kar <- read.csv("Data/Kalamazoo/KalamazooRiverMeteoWaterTempFlow.csv")
 
 # Select Site Name near Albany
 kar.site <- kar[kar$SiteID %in% c(
@@ -176,7 +176,10 @@ kar.site.2 <- kar.site %>%
   filter(tPCB < max(tPCB, na.rm = TRUE))
 
 # Save data ---------------------------------------------------------------
+kar.site.2 <- kar.site %>%
+  filter(tPCB < max(tPCB, na.rm = TRUE))
+
 # To be used for the flux calculations
-write.csv(kar.site.2, "Data/Kalamazoo/KalamazooRiver_envV2.csv",
+write.csv(kar.site.2, "Data/Kalamazoo/KalamazooRiverMeteoWaterTempFlowConV0.csv",
           row.names = FALSE)
 

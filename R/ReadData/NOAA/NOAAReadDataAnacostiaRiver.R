@@ -94,5 +94,5 @@ anr <- anr %>%
   left_join(weather_daily, by = c("SampleDate" = "date"))
 
 # Save
-write.csv(anr, "Data/AnacostiaRiver/AnacostiaRiver_env.csv", row.names = FALSE)
+write.csv(anr, "Data/AnacostiaRiver/AnacostiaRiverMeteo.csv", row.names = FALSE)
 

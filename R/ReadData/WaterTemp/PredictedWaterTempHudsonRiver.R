@@ -69,7 +69,7 @@ find_single_col <- function(df, pattern, what = "column") {
 }
 
 # ---- 1. Read data ----
-hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiver_env.csv", stringsAsFactors = FALSE)
+hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiverMeteo.csv", stringsAsFactors = FALSE)
 hur$SampleDate <- as.Date(hur$SampleDate)   # ensure Date
 
 # Keep only 2000+
@@ -141,8 +141,8 @@ hur2 <- hur %>%
   )
 
 out <- hur2 %>%
-  left_join(select(air, -doy), by = c("SampleDate" = "date")) %>%  # don't import air$doy
-  left_join(clim, by = "doy") %>%                                  # now 'doy' from hor2 is present
+  left_join(select(air, -doy), by = c("SampleDate" = "date")) %>%
+  left_join(clim, by = "doy") %>%
   mutate(
     baseline    = beta * tair_clim,
     anomaly     = tair - tair_clim,
@@ -154,4 +154,4 @@ out_pred <- out %>%
   select(all_of(names(hur)), pred_water_temp_C)
 
 # ---- 5. Save result ----
-write.csv(out_pred, "Data/HudsonRiverAlbany/HudsonRiver_env.csv", row.names = FALSE)
+write.csv(out_pred, "Data/HudsonRiverAlbany/HudsonRiverMeteoWaterTemp.csv", row.names = FALSE)

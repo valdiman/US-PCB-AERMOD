@@ -39,11 +39,23 @@
 # β = 1.0 and γ = 0.9.
 # -------------------------------------------------------------------
 
-library(daymetr)
-library(dplyr)
-library(tidyr)
-library(lubridate)
-library(readr)
+# Install packages
+{
+  install.packages("dplyr")
+  install.packages("lubridate")
+  install.packages("daymetr")
+  install.packages("tidyr")
+  install.packages("readr")
+}
+
+# Load libraries
+{
+  library(daymetr)
+  library(dplyr)
+  library(tidyr)
+  library(lubridate)
+  library(readr)
+}
 
 # Helper: find a single column name matching a pattern (or throw informative error)
 find_single_col <- function(df, pattern, what = "column") {
@@ -58,7 +70,7 @@ find_single_col <- function(df, pattern, what = "column") {
 }
 
 # ---- 1. Read data ----
-kar <- read.csv("Data/Kalamazoo/KalamazooRiver_env.csv", stringsAsFactors = FALSE)
+kar <- read.csv("Data/Kalamazoo/KalamazooRiverMeteo.csv", stringsAsFactors = FALSE)
 kar$SampleDate <- as.Date(kar$SampleDate)   # ensure Date
 
 # Keep only 2000+
@@ -130,8 +142,8 @@ kar2 <- kar %>%
   )
 
 out <- kar2 %>%
-  left_join(select(air, -doy), by = c("SampleDate" = "date")) %>%  # don't import air$doy
-  left_join(clim, by = "doy") %>%                                  # now 'doy' from hor2 is present
+  left_join(select(air, -doy), by = c("SampleDate" = "date")) %>%
+  left_join(clim, by = "doy") %>%
   mutate(
     baseline    = beta * tair_clim,
     anomaly     = tair - tair_clim,
@@ -143,4 +155,4 @@ out_pred <- out %>%
   select(all_of(names(kar)), pred_water_temp_C)
 
 # ---- 5. Save result ----
-write.csv(out_pred, "Data/Kalamazoo/KalamazooRiver_env.csv", row.names = FALSE)
+write.csv(out_pred, "Data/Kalamazoo/KalamazooRiverMeteoWaterTemp.csv", row.names = FALSE)

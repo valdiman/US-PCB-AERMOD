@@ -16,7 +16,7 @@
 
 # Read data ---------------------------------------------------------------
 # Read water concentrations
-anr <- read.csv("Data/AnacostiaRiver/AnacostiaRiver_env.csv")
+anr <- read.csv("Data/AnacostiaRiver/AnacostiaRiverMeteoWaterTemp.csv")
 
 # Remove Site
 anr.site <- anr[!anr$SiteID %in% c(
@@ -165,6 +165,6 @@ ggplot(tpcb, aes(x = format(SampleDate), y = tPCB)) +
 
 # Save data ---------------------------------------------------------------
 # To be used for the flux calculations
-write.csv(anr.site, "Data/AnacostiaRiver/AnacostiaRiver_envV2.csv",
+write.csv(anr.site, "Data/AnacostiaRiver/AnacostiaRiverMeteoWaterTempConcV0.csv",
           row.names = FALSE)
 

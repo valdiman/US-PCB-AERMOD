@@ -94,5 +94,5 @@ fxr <- fxr %>%
   left_join(weather_daily, by = c("SampleDate" = "date"))
 
 # Save
-write.csv(fxr, "Data/FoxRiver/FoxRiver_env.csv", row.names = FALSE)
+write.csv(fxr, "Data/FoxRiver/FoxRiverMeteo.csv", row.names = FALSE)
 

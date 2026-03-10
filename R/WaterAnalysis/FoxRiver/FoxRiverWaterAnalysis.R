@@ -15,11 +15,9 @@
 
 # Read data ---------------------------------------------------------------
 # Read water concentrations
-fxr <- read.csv("Data/FoxRiver/FoxRiver_env.csv")
+fxr <- read.csv("Data/FoxRiver/FoxRiverMeteoWaterTemp.csv")
 
 # Remove Site
-
-
 fxr.site <- spr[!fxr$SiteID %in% c(
   "WCPCB-SPR002", "WCPCB-SPR006", "WCPCB-SPR008",
   "WCPCB-SPR010", "WCPCB-SPR011", "WCPCB-SPR013",
@@ -172,7 +170,7 @@ ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
 
 # Save data ---------------------------------------------------------------
 # To be used for the flux calculations
-write.csv(spr.site, "Data/Spokane/SpokaneRiver_envV2.csv",
+write.csv(fxr.site, "Data/FoxRiver/FoxRiverMeteoWaterTempConcVF.csv",
           row.names = FALSE)
 
 

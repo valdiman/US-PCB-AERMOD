@@ -96,5 +96,5 @@ kar <- kar %>%
   left_join(weather_daily, by = c("SampleDate" = "date"))
 
 # Save
-write.csv(kar, "Data/Kalamazoo/KalamazooRiver_env.csv", row.names = FALSE)
+write.csv(kar, "Data/Kalamazoo/KalamazooRiverMeteo.csv", row.names = FALSE)
 

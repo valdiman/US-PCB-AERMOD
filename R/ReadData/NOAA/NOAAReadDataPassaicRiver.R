@@ -94,5 +94,5 @@ par <- par %>%
   left_join(weather_daily, by = c("SampleDate" = "date"))
 
 # Save
-write.csv(par, "Data/PassaicRiver/PassaicRiver_env.csv", row.names = FALSE)
+write.csv(par, "Data/PassaicRiver/PassaicRiverMeteo.csv", row.names = FALSE)
 

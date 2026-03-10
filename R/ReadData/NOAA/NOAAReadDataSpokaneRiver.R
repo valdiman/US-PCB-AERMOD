@@ -94,5 +94,5 @@ spr <- spr %>%
   left_join(weather_daily, by = c("SampleDate" = "date"))
 
 # Save
-write.csv(spr, "Data/Spokane/SpokaneRiver_env.csv", row.names = FALSE)
+write.csv(spr, "Data/Spokane/SpokaneRiverMeteo.csv", row.names = FALSE)
 

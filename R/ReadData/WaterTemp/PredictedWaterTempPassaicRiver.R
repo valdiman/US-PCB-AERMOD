@@ -38,12 +38,23 @@
 # T_clim is the 1980–2019 daily climatology,
 # β = 1.0 and γ = 0.9.
 # -------------------------------------------------------------------
+# Install packages
+{
+  install.packages("dplyr")
+  install.packages("lubridate")
+  install.packages("daymetr")
+  install.packages("tidyr")
+  install.packages("readr")
+}
 
-library(daymetr)
-library(dplyr)
-library(tidyr)
-library(lubridate)
-library(readr)
+# Load libraries
+{
+  library(daymetr)
+  library(dplyr)
+  library(tidyr)
+  library(lubridate)
+  library(readr)
+}
 
 # Helper: find a single column name matching a pattern (or throw informative error)
 find_single_col <- function(df, pattern, what = "column") {
@@ -58,7 +69,7 @@ find_single_col <- function(df, pattern, what = "column") {
 }
 
 # ---- 1. Read data ----
-par <- read.csv("Data/PassaicRiver/PassaicRiver_env.csv", stringsAsFactors = FALSE)
+par <- read.csv("Data/PassaicRiver/PassaicRiverMeteo.csv", stringsAsFactors = FALSE)
 par$SampleDate <- as.Date(par$SampleDate)   # ensure Date
 
 # Keep only 2000+
@@ -130,8 +141,8 @@ par2 <- par %>%
   )
 
 out <- par2 %>%
-  left_join(select(air, -doy), by = c("SampleDate" = "date")) %>%  # don't import air$doy
-  left_join(clim, by = "doy") %>%                                  # now 'doy' from hor2 is present
+  left_join(select(air, -doy), by = c("SampleDate" = "date")) %>%
+  left_join(clim, by = "doy") %>%
   mutate(
     baseline    = beta * tair_clim,
     anomaly     = tair - tair_clim,
@@ -143,4 +154,4 @@ out_pred <- out %>%
   select(all_of(names(par)), pred_water_temp_C)
 
 # ---- 5. Save result ----
-write.csv(out_pred, "Data/PassaicRiver/PassaicRiver_env.csv", row.names = FALSE)
+write.csv(out_pred, "Data/PassaicRiver/PassaicRiverMeteoWaterTemp.csv", row.names = FALSE)
