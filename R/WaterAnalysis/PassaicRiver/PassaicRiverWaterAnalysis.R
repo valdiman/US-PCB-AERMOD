@@ -1,4 +1,4 @@
-# Evaluate KALson River water PCB data
+# Evaluate Passaic River water PCB data
 
 # Packages and libraries needed --------------------------------------------
 # Install packages
