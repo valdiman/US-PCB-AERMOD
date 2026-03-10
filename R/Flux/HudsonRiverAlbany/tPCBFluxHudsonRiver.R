@@ -1,9 +1,7 @@
-# Code to estimate total PCB fluxes from Hudson River, Albany
-# using 20xx and 20xx water samples
+# Code to estimate total PCB fluxes from the Hudson River, Albany, NY
 # The code estimate the flux of each congener, and
 # sum them to get total PCB
 # Air data are not used in these calculations
-# Monte Carlo simulation is included
 # No needs of R packages
 
 # Chemical properties -----------------------------------------------------
@@ -100,30 +98,25 @@ cp <- data.frame(
 hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiver_env.csv")
 
 # Select Site Name
-hur.site <- hur[hur$SiteID %in% c(
-  "WCPCB-HUD004",
-  "WCPCB-HUD016",
-  "WCPCB-HUD005",
-  "WCPCB-HUD001",
-  "WCPCB-HUD002"), ]
+hur.site <- hur[hur$SiteName == "Lake Winnebago", ]
 
 # Calculate averages
-C.PCB.water <- fx.site[, 7:110]
-SampleSite <- fx.site$SiteName
-SampleDate <- fx.site$SampleDate
-Latitude <- fx.site$Latitude
-Longitude <- fx.site$Longitude
+C.PCB.water <- hur.site[, 7:110]
+SampleSite <- hur.site$SiteName
+SampleDate <- hur.site$SampleDate
+Latitude <- hur.site$Latitude
+Longitude <- hur.site$Longitude
 
 # Environmental conditions
-tair <- fx.site$air_temp # [C]
-twater <- fx.site$wt # [C]
-u <- fx.site$wind_speed # [m/s]
+tair <- hur.site$air_temp # [C]
+twater <- hur.site$pred_water_temp_C # [C]
+u <- hur.site$wind_speed # [m/s]
 # Modify u @6.7 m to @10 m
 u10 <- (10.4/(log(6.7) + 8.1)) * u # [m/s]
-P <- fx.site$air_pressure # [atm]
+P <- hur.site$air_pressure # [atm]
 
 Num.Congener <- ncol(C.PCB.water)
-Num.Samples <- nrow(fx.site) 
+Num.Samples <- nrow(hur.site) 
 
 # Flux calculations -------------------------------------------------------
 
@@ -157,7 +150,7 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     
     # DOC and Kow partitioning
     Kow.water.t <- 10^(Kow)*exp(-(DeltaUow/R)*(1/(T.water + 273.15) - 1/T))
-    Kdoc.t <- 0.06*Kow.water.t
+    Kdoc.t <- 0.06 * Kow.water.t
     DOC <- 8.79 # [mg/L] Pearce et al (2023) Biogeochemistry 163:245–263 https://doi.org/10.1007/s10533-022-01000-z
     C.PCB.water.f <- Cw/(1 + Kdoc.t*DOC/1000^2) # [pg/L] or [ng/m3]
     
@@ -194,7 +187,7 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
 }
 
 # Compute flux matrix -----------------------------------------------------
-flux.mat <- matrix(NA, nrow = nrow(fx.site), ncol = ncol(C.PCB.water))
+flux.mat <- matrix(NA, nrow = nrow(hur.site), ncol = ncol(C.PCB.water))
 colnames(flux.mat) <- colnames(C.PCB.water)
 
 for(i in 1:ncol(C.PCB.water)){
@@ -202,10 +195,10 @@ for(i in 1:ncol(C.PCB.water)){
     MW.PCB[i], H0[i],
     C.PCB.water.vec = C.PCB.water[[i]],
     nOrtho.Cl[i], Kow[i],
-    tair = fx.site$air_temp,
-    twater = fx.site$wt,
-    u10 = (10.4/(log(6.7) + 8.1))*fx.site$wind_speed,
-    P = fx.site$air_pressure
+    tair = hur.site$air_temp,
+    twater = hur.site$pred_water_temp_C,
+    u10 = (10.4/(log(6.7) + 8.1))*hur.site$wind_speed,
+    P = hur.site$air_pressure
   )
 }
 
@@ -223,5 +216,5 @@ flux.df <- cbind(
 )
 
 # Save data ---------------------------------------------------------------
-write.csv(flux.df, "Output/Data/FoxRiver/FluxFoxRiverLakeWinnebago.csv",
+write.csv(flux.df, "Output/Data/HudsonRiverAlbany/FluxHudsonRiverAlbany.csv",
           row.names = FALSE)

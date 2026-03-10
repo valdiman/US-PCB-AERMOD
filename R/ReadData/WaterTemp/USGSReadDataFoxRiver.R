@@ -22,7 +22,7 @@
 
 # Read data ---------------------------------------------------------------
 # From Data Folder, Fox River.csv
-fxr <- read.csv("Data/FoxRiver/FoxRiver.csv")
+fxr <- read.csv("Data/FoxRiver/FoxRiver_env.csv")
 
 # Convert from "m/d/YYYY" to Date
 fxr$SampleDate <- as.Date(fxr$SampleDate)

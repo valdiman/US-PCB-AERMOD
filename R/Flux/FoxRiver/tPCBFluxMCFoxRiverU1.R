@@ -3,7 +3,6 @@
 # The code estimate the flux of each congener, and
 # sum them to get total PCB
 # Air data are not used in these calculations
-# Monte Carlo simulation is included
 # No needs of R packages
 
 # Chemical properties -----------------------------------------------------
@@ -97,32 +96,28 @@ cp <- data.frame(
 # Water concentrations and meteorological data ----------------------------
 # Read data from Data Folder
 # Concentration in pg/L [ng/m3]
-fx <- read.csv("Data/FoxRiver/FoxRiver_env.csv")
-#fx.wt <- read.csv("Data/FoxRiver/FoxRiver_temp.csv")
-
-# Add water temperature to fx
-fx$wt <- fx.wt$temp_final
+fxr <- read.csv("Data/FoxRiver/FoxRiver_env.csv")
 
 # Select Site Name
-fx.site <- fx[fx$SiteName == "Lake Winnebago", ]
+fxr.site <- fxr[fxr$SiteName == "Lake Winnebago", ]
 
 # Calculate averages
-C.PCB.water <- fx.site[, 7:110]
-SampleSite <- fx.site$SiteName
-SampleDate <- fx.site$SampleDate
-Latitude <- fx.site$Latitude
-Longitude <- fx.site$Longitude
+C.PCB.water <- fxr.site[, 7:110]
+SampleSite <- fxr.site$SiteName
+SampleDate <- fxr.site$SampleDate
+Latitude <- fxr.site$Latitude
+Longitude <- fxr.site$Longitude
 
 # Environmental conditions
-tair <- fx.site$air_temp # [C]
-twater <- fx.site$wt # [C]
-u <- fx.site$wind_speed # [m/s]
+tair <- fxr.site$air_temp # [C]
+twater <- fxr.site$pred_water_temp_C # [C]
+u <- fxr.site$wind_speed # [m/s]
 # Modify u @6.7 m to @10 m
 u10 <- (10.4/(log(6.7) + 8.1)) * u # [m/s]
-P <- fx.site$air_pressure # [atm]
+P <- fxr.site$air_pressure # [atm]
 
 Num.Congener <- ncol(C.PCB.water)
-Num.Samples <- nrow(fx.site) 
+Num.Samples <- nrow(fxr.site) 
 
 # Flux calculations -------------------------------------------------------
 
@@ -156,7 +151,7 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     
     # DOC and Kow partitioning
     Kow.water.t <- 10^(Kow)*exp(-(DeltaUow/R)*(1/(T.water + 273.15) - 1/T))
-    Kdoc.t <- 0.06*Kow.water.t
+    Kdoc.t <- 0.06 * Kow.water.t
     DOC <- 8.79 # [mg/L] Pearce et al (2023) Biogeochemistry 163:245–263 https://doi.org/10.1007/s10533-022-01000-z
     C.PCB.water.f <- Cw/(1 + Kdoc.t*DOC/1000^2) # [pg/L] or [ng/m3]
     
@@ -193,7 +188,7 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
 }
 
 # Compute flux matrix -----------------------------------------------------
-flux.mat <- matrix(NA, nrow = nrow(fx.site), ncol = ncol(C.PCB.water))
+flux.mat <- matrix(NA, nrow = nrow(fxr.site), ncol = ncol(C.PCB.water))
 colnames(flux.mat) <- colnames(C.PCB.water)
 
 for(i in 1:ncol(C.PCB.water)){
@@ -201,10 +196,10 @@ for(i in 1:ncol(C.PCB.water)){
     MW.PCB[i], H0[i],
     C.PCB.water.vec = C.PCB.water[[i]],
     nOrtho.Cl[i], Kow[i],
-    tair = fx.site$air_temp,
-    twater = fx.site$wt,
-    u10 = (10.4/(log(6.7) + 8.1))*fx.site$wind_speed,
-    P = fx.site$air_pressure
+    tair = fxr.site$air_temp,
+    twater = fxr.site$pred_water_temp_C,
+    u10 = (10.4/(log(6.7) + 8.1))*fxr.site$wind_speed,
+    P = fxr.site$air_pressure
   )
 }
 
