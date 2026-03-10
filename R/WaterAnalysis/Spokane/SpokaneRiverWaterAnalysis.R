@@ -168,7 +168,10 @@ ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
   theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
         axis.ticks.length = unit(0.2, "cm"))
 
-
+# Save data ---------------------------------------------------------------
+# To be used for the flux calculations
+write.csv(spr.site, "Data/Spokane/SpokaneRiver_envV2.csv",
+          row.names = FALSE)
 
 
 

@@ -95,7 +95,7 @@ ggplot(tpcb, aes(x = "", y = tPCB)) +
 tpcb.2 <- tpcb %>%
   filter(tPCB < max(tPCB, na.rm = TRUE))
 
-# basic quantities (to be used in the Monte Carlo simulation)
+# basic quantities
 mu_log  <- mean(log(tpcb.2$tPCB), na.rm = TRUE)      # mean of log
 sd_log  <- sd(log(tpcb.2$tPCB), na.rm = TRUE)        # sd of log
 
@@ -171,6 +171,12 @@ ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
         axis.ticks.length = unit(0.2, "cm"))
 
 
+# remove higher value to be used for the flux calculations
+kar.site.2 <- kar.site %>%
+  filter(tPCB < max(tPCB, na.rm = TRUE))
 
-
+# Save data ---------------------------------------------------------------
+# To be used for the flux calculations
+write.csv(kar.site.2, "Data/Kalamazoo/KalamazooRiver_envV2.csv",
+          row.names = FALSE)
 

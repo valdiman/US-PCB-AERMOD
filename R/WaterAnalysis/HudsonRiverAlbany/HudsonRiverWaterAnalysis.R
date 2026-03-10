@@ -64,7 +64,7 @@ ggplot(tpcb, aes(x = log10(tPCB))) +
   labs(x = expression(bold(Sigma*"PCB (pg/L)")),
        y = "Density")
 
-# basic quantities (to be used in the Monte Carlo simulation)
+# basic quantities
 mu_log  <- mean(log(tpcb$tPCB), na.rm = TRUE)      # mean of log
 sd_log  <- sd(log(tpcb$tPCB), na.rm = TRUE)        # sd of log
 
@@ -162,7 +162,10 @@ ggplot(tpcb, aes(x = format(SampleDate), y = tPCB)) +
   theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
         axis.ticks.length = unit(0.2, "cm"))
 
-
+# Save data ---------------------------------------------------------------
+# To be used for the flux calculations
+write.csv(hur.site, "Data/HudsonRiverAlbany/HudsonRiver_envV2.csv",
+          row.names = FALSE)
 
 
 
