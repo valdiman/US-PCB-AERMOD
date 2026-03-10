@@ -1,4 +1,5 @@
 # Evaluate KALson River water PCB data
+# Aroclor 1016
 
 # Packages and libraries needed --------------------------------------------
 # Install packages

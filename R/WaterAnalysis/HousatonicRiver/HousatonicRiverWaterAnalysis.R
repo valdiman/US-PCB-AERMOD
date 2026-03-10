@@ -1,4 +1,5 @@
 # Evaluate Housatonic River water PCB data
+# Aroclor 1260
 
 # Packages and libraries needed --------------------------------------------
 # Install packages
