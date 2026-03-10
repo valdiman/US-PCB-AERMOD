@@ -22,7 +22,7 @@
 
 # Read data ---------------------------------------------------------------
 # From Data Folder, Spokane River.csv
-spr <- read.csv("Data/Spokane/SpokaneRiver_env.csv")
+spr <- read.csv("Data/Spokane/SpokaneRiverMeteoWaterTemp.csv")
 
 # Convert from "m/d/YYYY" to Date
 spr$SampleDate <- as.Date(spr$SampleDate)
@@ -80,5 +80,5 @@ spr <- spr %>%
             by = c("SampleDate" = "time"))
 
 # save
-write.csv(spr, "Data/Spokane/SpokaneRiver_env.csv", row.names = FALSE)
+write.csv(spr, "Data/Spokane/SpokaneRiverMeteoWaterTempFlow.csv", row.names = FALSE)
 

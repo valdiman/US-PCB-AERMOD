@@ -69,7 +69,7 @@ find_single_col <- function(df, pattern, what = "column") {
 }
 
 # ---- 1. Read data ----
-fxr <- read.csv("Data/FoxRiver/FoxRiver_env.csv", stringsAsFactors = FALSE)
+fxr <- read.csv("Data/FoxRiver/FoxRiverMeteo.csv", stringsAsFactors = FALSE)
 fxr$SampleDate <- as.Date(fxr$SampleDate)   # ensure Date
 
 # Keep only 2000+
@@ -141,17 +141,17 @@ fxr2 <- fxr %>%
   )
 
 out <- fxr2 %>%
-  left_join(select(air, -doy), by = c("SampleDate" = "date")) %>%  # don't import air$doy
-  left_join(clim, by = "doy") %>%                                  # now 'doy' from hor2 is present
+  left_join(select(air, -doy), by = c("SampleDate" = "date")) %>%
+  left_join(clim, by = "doy") %>%
   mutate(
     baseline    = beta * tair_clim,
     anomaly     = tair - tair_clim,
     pred_water_temp_C = baseline + gamma * anomaly
   )
 
-# keep original hor columns + predicted temperature
+# keep original fxr columns + predicted temperature
 out_pred <- out %>%
   select(all_of(names(fxr)), pred_water_temp_C)
 
 # ---- 5. Save result ----
-write.csv(out_pred, "Data/FoxRiver/FoxRiver_env.csv", row.names = FALSE)
+write.csv(out_pred, "Data/FoxRiver/FoxRiverMeteoWaterTemp.csv", row.names = FALSE)

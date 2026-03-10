@@ -56,7 +56,6 @@
   library(readr)
 }
 
-
 # Helper: find a single column name matching a pattern (or throw informative error)
 find_single_col <- function(df, pattern, what = "column") {
   matches <- grep(pattern, names(df), ignore.case = TRUE, value = TRUE)
@@ -70,7 +69,7 @@ find_single_col <- function(df, pattern, what = "column") {
 }
 
 # ---- 1. Read data ----
-hor <- read.csv("Data/HousatonicRiver/HousatonicRiver_env.csv", stringsAsFactors = FALSE)
+hor <- read.csv("Data/HousatonicRiver/HousatonicRiverMeteo.csv", stringsAsFactors = FALSE)
 hor$SampleDate <- as.Date(hor$SampleDate)   # ensure Date
 
 # Keep only 2000+
@@ -142,8 +141,8 @@ hor2 <- hor %>%
   )
 
 out <- hor2 %>%
-  left_join(select(air, -doy), by = c("SampleDate" = "date")) %>%  # don't import air$doy
-  left_join(clim, by = "doy") %>%                                  # now 'doy' from hor2 is present
+  left_join(select(air, -doy), by = c("SampleDate" = "date")) %>%
+  left_join(clim, by = "doy") %>%
   mutate(
     baseline    = beta * tair_clim,
     anomaly     = tair - tair_clim,
@@ -155,4 +154,4 @@ out_pred <- out %>%
   select(all_of(names(hor)), pred_water_temp_C)
 
 # ---- 5. Save result ----
-write.csv(out_pred, "Data/HousatonicRiver/HousatonicRiver_env.csv", row.names = FALSE)
+write.csv(out_pred, "Data/HousatonicRiver/HousatonicRiverMeteoWaterTemp.csv", row.names = FALSE)
