@@ -33,6 +33,8 @@ dir.create("R/WaterAnalysis/Kalamazoo")
 dir.create("R/WaterAnalysis/PassaicRiver")
 dir.create("R/WaterAnalysis/Spokane")
 
+dir.create("R/PCBProfile")
+
 dir.create("Data")
 dir.create("Data/AnacostiaRiver")
 dir.create("Data/FoxRiver")
