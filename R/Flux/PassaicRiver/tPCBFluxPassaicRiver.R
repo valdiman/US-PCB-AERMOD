@@ -1,4 +1,4 @@
-# Code to estimate total PCB fluxes from the Passaic River
+# Code to estimate total PCB fluxes from the Passaic River, Newark, NJ
 # The code estimate the flux of each congener, and
 # sum them to get total PCB
 # Air data are not used in these calculations
@@ -148,7 +148,8 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     # DOC and Kow partitioning
     Kow.water.t <- 10^(Kow)*exp(-(DeltaUow/R)*(1/(T.water + 273.15) - 1/T))
     Kdoc.t <- 0.06 * Kow.water.t
-    DOC <- 8.79 # [mg/L] Pearce et al (2023) Biogeochemistry 163:245–263 https://doi.org/10.1007/s10533-022-01000-z
+    # Bengraine et al, 2004, https://doi.org/10.1016/j.jhazmat.2003.12.002
+    DOC <- 3.75 # [mg/L] from figure 6 (A)
     C.PCB.water.f <- Cw/(1 + Kdoc.t*DOC/1000^2) # [pg/L] or [ng/m3]
     
     # Air side mass transfer
