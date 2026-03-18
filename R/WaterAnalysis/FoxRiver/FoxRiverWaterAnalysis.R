@@ -17,19 +17,16 @@
 # Read water concentrations
 fxr <- read.csv("Data/FoxRiver/FoxRiverMeteoWaterTemp.csv")
 
-# Remove Site
-fxr.site <- spr[!fxr$SiteID %in% c(
-  "WCPCB-SPR002", "WCPCB-SPR006", "WCPCB-SPR008",
-  "WCPCB-SPR010", "WCPCB-SPR011", "WCPCB-SPR013",
-  "WCPCB-SPR015"), ]
+# Select site
+fxr.site <- fxr[!fxr$SiteID %in% "WCPCB-FOX001", ]
 
 # Select  locations, sampling date, lat, long and tPCB
 tpcb <- data.frame(
-  SiteName   = spr.site$SiteName,
-  SampleDate = spr.site$SampleDate,
-  Latitude   = spr.site$Latitude,
-  Longitude  = spr.site$Longitude,
-  tPCB       = spr.site$tPCB)
+  SiteName   = fxr.site$SiteName,
+  SampleDate = fxr.site$SampleDate,
+  Latitude   = fxr.site$Latitude,
+  Longitude  = fxr.site$Longitude,
+  tPCB       = fxr.site$tPCB)
 
 # Change to numeric
 tpcb[, 3:5] <- lapply(tpcb[, 3:5], as.numeric)
@@ -62,7 +59,7 @@ ggplot(tpcb, aes(x = log10(tPCB))) +
   labs(x = expression(bold(Sigma*"PCB (pg/L)")),
        y = "Density")
 
-# basic quantities (to be used in the Monte Carlo simulation)
+# basic quantities
 mu_log  <- mean(log(tpcb$tPCB), na.rm = TRUE)      # mean of log
 sd_log  <- sd(log(tpcb$tPCB), na.rm = TRUE)        # sd of log
 
@@ -155,6 +152,77 @@ ggplot(tpcb.2, aes(x = SiteName, y = tPCB, group = SampleDate)) +
         axis.ticks.length = unit(0.2, "cm"))
 
 ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
+  geom_point() +
+  xlab("") +
+  theme_bw() +
+  theme(aspect.ratio = 10/20) +
+  ylab(expression(bold(Sigma*"PCB (pg/L)"))) +
+  theme(axis.text.y = element_text(face = "bold", size = 9),
+        axis.title.y = element_text(face = "bold", size = 9)) +
+  theme(axis.text.x = element_text(face = "bold", size = 7,
+                                   angle = 60, hjust = 1),
+        axis.title.x = element_text(face = "bold", size = 7)) +
+  theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
+        axis.ticks.length = unit(0.2, "cm"))
+
+# Remove samples < 2010
+fxr.site$SampleDate <- as.Date(fxr.site$SampleDate)
+fxr.final <- fxr.site[format(fxr.site$SampleDate, "%Y") >= 2010, ]
+
+# Histogram
+ggplot(fxr.final, aes(x = tPCB)) +
+  geom_histogram(aes(y = ..density..),
+                 bins = 10,
+                 fill = "grey70",
+                 color = "black",
+                 alpha = 0.7) +
+  geom_density(color = "blue", linewidth = 1) +
+  theme_bw() +
+  labs(x = expression(bold(Sigma*"PCB (pg/L)")),
+       y = "Density")
+
+ggplot(fxr.final, aes(x = log10(tPCB))) +
+  geom_histogram(aes(y = ..density..),
+                 bins = 10,
+                 fill = "grey70",
+                 color = "black",
+                 alpha = 0.7) +
+  geom_density(color = "blue", linewidth = 1) +
+  theme_bw() +
+  labs(x = expression(bold(Sigma*"PCB (pg/L)")),
+       y = "Density")
+
+# Spatial plot
+ggplot(fxr.final, aes(x = factor(SiteName), y = tPCB)) + 
+  geom_point() +
+  theme_bw() +
+  xlab(expression("")) +
+  theme(aspect.ratio = 10/18) +
+  ylab(expression(bold(Sigma*"PCB (pg/L)"))) +
+  theme(axis.text.y = element_text(face = "bold", size = 9),
+        axis.title.y = element_text(face = "bold", size = 9)) +
+  theme(axis.text.x = element_text(face = "bold", size = 8,
+                                   angle = 60, hjust = 1),
+        axis.title.x = element_text(face = "bold", size = 8)) +
+  theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
+        axis.ticks.length = unit(0.2, "cm"))
+
+ggplot(fxr.final, aes(x = SiteName, y = tPCB, group = SampleDate)) + 
+  geom_point(aes(color = SampleDate), shape = 1, size  = 2) +
+  labs(color = "Date") +
+  theme_bw() +
+  xlab(expression("")) +
+  theme(aspect.ratio = 10/18) +
+  ylab(expression(bold(Sigma*"PCB (pg/L)"))) +
+  theme(axis.text.y = element_text(face = "bold", size = 9),
+        axis.title.y = element_text(face = "bold", size = 9)) +
+  theme(axis.text.x = element_text(face = "bold", size = 8,
+                                   angle = 60, hjust = 1),
+        axis.title.x = element_text(face = "bold", size = 8)) +
+  theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
+        axis.ticks.length = unit(0.2, "cm"))
+
+ggplot(fxr.final, aes(x = format(SampleDate), y = tPCB)) +
   geom_point() +
   xlab("") +
   theme_bw() +
