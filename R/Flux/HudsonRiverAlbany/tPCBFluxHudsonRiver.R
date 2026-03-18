@@ -95,7 +95,7 @@ cp <- data.frame(
 # Water concentrations and meteorological data ----------------------------
 # Read data from Data Folder
 # Concentration in pg/L [ng/m3]
-hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiver_envV2.csv")
+hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiverMeteoWaterTempConcVF.csv")
 
 # Calculate
 C.PCB.water <- hur[, 7:110]

@@ -95,7 +95,7 @@ cp <- data.frame(
 # Water concentrations and meteorological data ----------------------------
 # Read data from Data Folder
 # Concentration in pg/L [ng/m3]
-par <- read.csv("Data/PassaicRiver/PassaicRiver_envV2.csv")
+par <- read.csv("Data/PassaicRiver/PassaicRiverMeteoWaterTempConcVF.csv")
 
 # Calculate
 C.PCB.water <- par[, 7:110]
