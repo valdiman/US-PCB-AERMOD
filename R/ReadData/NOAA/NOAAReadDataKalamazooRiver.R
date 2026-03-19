@@ -43,7 +43,7 @@ stations_nearby <- stations %>%
 # W K KELLOGG AIRPORT 30 km from Kalamazoo
 kar.station <- stations[stations$usaf == "725396", ]
 
-# Read Hudson River Data
+# Read Kalamazoo River Data
 kar <- read.csv("Data/Kalamazoo/KalamazooRiver.csv")
 kar$SampleDate <- as.Date(kar$SampleDate)
 

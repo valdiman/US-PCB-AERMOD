@@ -138,49 +138,50 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     a <- 0.85; b <- 1; c <- 32.7
     a2 <- 0.13; b2 <- 2.9; c2 <- 47.8
     
-    DeltaUaw <- (a*MW.PCB - b*nOrtho.Cl + c)*1000
-    DeltaUoa <- (-a2*MW.PCB + b2*nOrtho.Cl - c2)*1000
-    DeltaUow <- DeltaUaw + DeltaUoa
+    DeltaUaw <- (a * MW.PCB - b * nOrtho.Cl + c) * 1000 # [J/mol]
+    DeltaUoa <- (-a2 * MW.PCB + b2 * nOrtho.Cl - c2) * 1000 # [J/mol]
+    DeltaUow <- DeltaUaw + DeltaUoa # [J/mol]
     
     # Henry's law constant
-    K <- 10^(H0)*101325/(R*T)
-    K.air.water <- K*exp(-(DeltaUaw/R)*(1/(T.water + 273.15) - 1/T))
-    K.final <- K.air.water*(T.water + 273.15)/(T.air + 273.15)
+    K <- 10^(H0) * 101325 / (R * T) # [Lwater/Lair]
+    K.air.water <- K*exp(-(DeltaUaw/R)*(1/(T.water + 273.15) - 1/T)) # [Lwater/Lair]
+    K.final <- K.air.water*(T.water + 273.15)/(T.air + 273.15) # [Lwater/Lair]
     
     # DOC and Kow partitioning
-    Kow.water.t <- 10^(Kow)*exp(-(DeltaUow/R)*(1/(T.water + 273.15) - 1/T))
-    Kdoc.t <- 0.06*Kow.water.t
+    Kow.water.t <- 10^(Kow)*exp(-(DeltaUow/R)*(1/(T.water + 273.15) - 1/T)) # [Loctanol/Lwater]
+    Kdoc.t <- 0.06 * Kow.water.t # [Lwater/kgdoc]
     # MacAvoy et al, 2009. DOI	https://doi.org/10.1039/B904109E
     DOC <- 13.75 # [mg/L] Mid and down locations
     C.PCB.water.f <- Cw/(1 + Kdoc.t*DOC/1000^2) # [pg/L] or [ng/m3]
     
     # Air side mass transfer
-    D.water.air <- (10^(-3)*1013.25*((273.15+T.air)^1.75*((1/28.97)+(1/18.0152))^(0.5))/P.atm/(20.1^(1/3)+9.5^(1/3))^2)
-    D.PCB.air <- D.water.air*(MW.PCB/18.0152)^(-0.5)
-    V.water.air <- 0.2*u + 0.3
-    V.PCB.air <- V.water.air*(D.PCB.air/D.water.air)^(2/3) # [m/d]
+    D.water.air <- (10^(-3)*1013.25*((273.15+T.air)^1.75*((1/28.97)+(1/18.0152))^(0.5))/P.atm/(20.1^(1/3)+9.5^(1/3))^2) # [cm2/s]
+    D.PCB.air <- D.water.air*(MW.PCB/18.0152)^(-0.5) # [cm2/s]
+    V.water.air <- 0.2*u + 0.3 # u @10 meters [cm/s]
+    V.PCB.air <- V.water.air*(D.PCB.air/D.water.air)^(2/3) # [cm/s]
     
     # Water side mass transfer
     visc.water <- 10^(-4.5318-220.57/(149.39-(273.15+T.water)))
     dens.water <- (999.83952+16.945176*T.water - 7.9870401*10^-3*T.water^2 -
                      46.170461*10^-6*3 + 105.56302*10^-9*T.water^4 -
                      280.54253*10^-12*T.water^5)/(1+16.87985*10^-3*T.water)
-    v.water <- visc.water/dens.water*10000
-    diff.co2 <- 0.05019*exp(-19.51*1000/(273.15+T.water)/R)
-    D.PCB.water <- diff.co2*(MW.PCB/44.0094)^(-0.5)
+    v.water <- visc.water/dens.water*10000 # [cm2/s]
+    diff.co2 <- 0.05019*exp(-19.51*1000/(273.15+T.water)/R) # [cm2/s]
+    D.PCB.water <- diff.co2*(MW.PCB/44.0094)^(-0.5) # [cm2/s]
     Sc.PCB.water <- v.water/D.PCB.water
     Sc.co2.water <- v.water/diff.co2
     
-    k600 <- (4.46 + 7.11*u)/60/60
+    k600 <- (4.46 + 7.11*u) # u (air velocity) in m/s, k600 in cm/h
+    k600 <- k600 / 60 / 60 # [cm/s]
     if(u > 5){
-      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5) # [m/d]
+      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5) # [cm/s]
     } else {
-      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-2/3) # [m/d]
+      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-2/3) # [cm/s]
     }
     
     # Combined air-water mass transfer
-    mtc.PCB <- 1/(1/V.PCB.water + 1/(V.PCB.air*K.final)) # [m/d]
-    F.PCB.aw[i] <- mtc.PCB * C.PCB.water.f * 60*60*24/100  # [ng/m2/d]
+    mtc.PCB <- 1/(1/V.PCB.water + 1/(V.PCB.air*K.final)) # [cm/s]
+    F.PCB.aw[i] <- mtc.PCB * C.PCB.water.f * 60 * 60 * 24 / 100  # [ng/m2/d]
   }
   
   return(F.PCB.aw)
@@ -214,6 +215,33 @@ flux.df <- cbind(
   Longitude = Longitude,
   flux.df
 )
+
+# Descriptive stats
+summary(flux.df$tPCB)
+
+# Visualization -----------------------------------------------------------
+# Histogram
+ggplot(flux.df, aes(x = tPCB)) +
+  geom_histogram(aes(y = ..density..),
+                 bins = 10,
+                 fill = "grey70",
+                 color = "black",
+                 alpha = 0.7) +
+  geom_density(color = "blue", linewidth = 1) +
+  theme_bw() +
+  labs(x = expression(bold("Flux "*Sigma*"PCB (pg/L)")),
+       y = "Density")
+
+ggplot(flux.df, aes(x = log10(tPCB))) +
+  geom_histogram(aes(y = ..density..),
+                 bins = 10,
+                 fill = "grey70",
+                 color = "black",
+                 alpha = 0.7) +
+  geom_density(color = "blue", linewidth = 1) +
+  theme_bw() +
+  labs(x = expression(bold("Flux "*Sigma*"PCB (ng/m2/d)")),
+       y = "Density")
 
 # Save data ---------------------------------------------------------------
 write.csv(flux.df, "Output/Data/AnacostiaRiver/FluxAnacostiaRiver.csv",

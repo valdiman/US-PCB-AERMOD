@@ -1,4 +1,4 @@
-# Code to estimate total PCB fluxes from Fox River
+# Code to estimate total PCB fluxes from Kalamazoo River
 # using 20xx and 20xx water samples
 # The code estimate the flux of each congener, and
 # sum them to get total PCB
@@ -97,37 +97,31 @@ cp <- data.frame(
 # Water concentrations and meteorological data ----------------------------
 # Read data from Data Folder
 # Concentration in pg/L [ng/m3]
-fx <- read.csv("Data/FoxRiver/FoxRiver_env.csv")
-fx.wt <- read.csv("Data/FoxRiver/FoxRiver_temp.csv")
-
-# Add water temperature to fx
-fx$wt <- fx.wt$temp_final
-
-# Select Site Name
-fx.site <- fx[fx$SiteName == "Lake Winnebago", ]
+kar <- read.csv("Data/Kalamazoo/KalamazooRiverMeteoWaterTempFlowConVF.csv")
 
 # Calculate averages
-C.PCB.water <- fx.site[, 7:110]
-SampleSite <- fx.site$SiteName
-SampleDate <- fx.site$SampleDate
-Latitude <- fx.site$Latitude
-Longitude <- fx.site$Longitude
+C.PCB.water <- kar[, 13:116]
+SampleSite <- kar$SiteName
+SampleDate <- kar$SampleDate
+Latitude <- kar$Latitude
+Longitude <- kar$Longitude
 
 # Environmental conditions
-tair <- fx.site$air_temp # [C]
-twater <- fx.site$wt # [C]
-u <- fx.site$wind_speed # [m/s]
+tair <- kar$air_temp # [C]
+twater <- kar$pred_water_temp_C # [C]
+u <- kar$wind_speed # [m/s]
 # Modify u @6.7 m to @10 m
 u10 <- (10.4/(log(6.7) + 8.1)) * u # [m/s]
-P <- fx.site$air_pressure # [atm]
+P <- kar$air_pressure # [atm]
+vwater <- kar$velocity_cms # [cm/s]
 
 Num.Congener <- ncol(C.PCB.water)
-Num.Samples <- nrow(fx.site) 
+Num.Samples <- nrow(kar) 
 
 # Flux calculations -------------------------------------------------------
 
 final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
-                         tair, twater, u10, P) {
+                         tair, twater, u10, P, vwater) {
   
   R <- 8.3144  # [Pa m3/K/mol]
   T <- 298.15  # reference temp [K]
@@ -140,6 +134,7 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     T.air <- tair[i]
     u <- u10[i]
     P.atm <- P[i]
+    vw <- vwater[i]
     
     # Internal energy parameters
     a <- 0.85; b <- 1; c <- 32.7
@@ -178,12 +173,9 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     Sc.PCB.water <- v.water/D.PCB.water
     Sc.co2.water <- v.water/diff.co2
     
-    # k600 <- 13.82 + 0.35 * w # w is the water velocity in cm/s
-    if(u > 5){
-      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5) # [m/d]
-    } else {
-      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-2/3) # [m/d]
-    }
+    k600 <- 13.82 + 0.35 * vw # water velocity (vw) in cm/s, k600 in cm/h
+    k600 <- k600 * 60 / 60 # [cm/s]
+    V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5) # [cm/s]
     
     # Combined air-water mass transfer
     mtc.PCB <- 1/(1/V.PCB.water + 1/(V.PCB.air*K.final)) # [m/d]
@@ -202,10 +194,11 @@ for(i in 1:ncol(C.PCB.water)){
     MW.PCB[i], H0[i],
     C.PCB.water.vec = C.PCB.water[[i]],
     nOrtho.Cl[i], Kow[i],
-    tair = fx.site$air_temp,
-    twater = fx.site$wt,
-    u10 = (10.4/(log(6.7) + 8.1))*fx.site$wind_speed,
-    P = fx.site$air_pressure
+    tair = kar$air_temp,
+    twater = kar$wt,
+    u10 = (10.4/(log(6.7) + 8.1)) * kar$wind_speed,
+    P = kar$air_pressure,
+    vwater <- kar$velocity_cms
   )
 }
 
@@ -223,5 +216,5 @@ flux.df <- cbind(
 )
 
 # Save data ---------------------------------------------------------------
-write.csv(flux.df, "Output/Data/FoxRiver/FluxFoxRiverLakeWinnebago.csv",
+write.csv(flux.df, "Output/Data/Kalamazoo/FluxKalamazooRiver.csv",
           row.names = FALSE)

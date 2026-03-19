@@ -213,6 +213,33 @@ flux.df <- cbind(
   flux.df
 )
 
+# Descriptive stats
+summary(flux.df$tPCB)
+
+# Visualization -----------------------------------------------------------
+# Histogram
+ggplot(flux.df, aes(x = tPCB)) +
+  geom_histogram(aes(y = ..density..),
+                 bins = 10,
+                 fill = "grey70",
+                 color = "black",
+                 alpha = 0.7) +
+  geom_density(color = "blue", linewidth = 1) +
+  theme_bw() +
+  labs(x = expression(bold("Flux "*Sigma*"PCB (pg/L)")),
+       y = "Density")
+
+ggplot(flux.df, aes(x = log10(tPCB))) +
+  geom_histogram(aes(y = ..density..),
+                 bins = 10,
+                 fill = "grey70",
+                 color = "black",
+                 alpha = 0.7) +
+  geom_density(color = "blue", linewidth = 1) +
+  theme_bw() +
+  labs(x = expression(bold("Flux "*Sigma*"PCB (ng/m2/d)")),
+       y = "Density")
+
 # Save data ---------------------------------------------------------------
 write.csv(flux.df, "Output/Data/PassaicRiver/FluxPassaicRiver.csv",
           row.names = FALSE)

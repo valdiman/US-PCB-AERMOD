@@ -95,7 +95,7 @@ cp <- data.frame(
 # Water concentrations and meteorological data ----------------------------
 # Read data from Data Folder
 # Concentration in pg/L [ng/m3]
-spr <- read.csv("Data/Spokane/SpokaneRiver_envV2.csv")
+spr <- read.csv("Data/Spokane/SpokaneRiverMeteoWaterTempFlowConcVF.csv")
 
 # Calculate
 C.PCB.water <- spr[, 7:110]
@@ -111,6 +111,7 @@ u <- spr$wind_speed # [m/s]
 # Modify u @6.7 m to @10 m
 u10 <- (10.4/(log(6.7) + 8.1)) * u # [m/s]
 P <- spr$air_pressure # [atm]
+vwater <- spr$velocity_cms # [cm/s]
 
 Num.Congener <- ncol(C.PCB.water)
 Num.Samples <- nrow(spr) 
@@ -118,7 +119,7 @@ Num.Samples <- nrow(spr)
 # Flux calculations -------------------------------------------------------
 
 final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
-                         tair, twater, u10, P) {
+                         tair, twater, u10, P, vwater) {
   
   R <- 8.3144  # [Pa m3/K/mol]
   T <- 298.15  # reference temp [K]
@@ -131,6 +132,7 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     T.air <- tair[i]
     u <- u10[i]
     P.atm <- P[i]
+    vw <- vwater[i]
     
     # Internal energy parameters
     a <- 0.85; b <- 1; c <- 32.7
@@ -169,12 +171,9 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     Sc.PCB.water <- v.water/D.PCB.water
     Sc.co2.water <- v.water/diff.co2
     
-    k600 <- (4.46 + 7.11*u)/60/60
-    if(u > 5){
-      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5) # [m/d]
-    } else {
-      V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-2/3) # [m/d]
-    }
+    k600 <- 13.82 + 0.35 * vw # water velocity (vw) in cm/s, k600 in cm/h
+    k600 <- k600 * 60 / 60 # [cm/s]
+    V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5) # [cm/s]
     
     # Combined air-water mass transfer
     mtc.PCB <- 1/(1/V.PCB.water + 1/(V.PCB.air*K.final)) # [m/d]
@@ -196,7 +195,8 @@ for(i in 1:ncol(C.PCB.water)){
     tair = spr$air_temp,
     twater = spr$pred_water_temp_C,
     u10 = (10.4/(log(6.7) + 8.1))*spr$wind_speed,
-    P = spr$air_pressure
+    P = spr$air_pressure,
+    vwater <- spr$velocity_cms
   )
 }
 
@@ -212,6 +212,34 @@ flux.df <- cbind(
   Longitude = Longitude,
   flux.df
 )
+
+# Descriptive stats
+summary(flux.df$tPCB)
+
+# Visualization -----------------------------------------------------------
+# Histogram
+ggplot(flux.df, aes(x = tPCB)) +
+  geom_histogram(aes(y = ..density..),
+                 bins = 10,
+                 fill = "grey70",
+                 color = "black",
+                 alpha = 0.7) +
+  geom_density(color = "blue", linewidth = 1) +
+  theme_bw() +
+  labs(x = expression(bold("Flux "*Sigma*"PCB (pg/L)")),
+       y = "Density")
+
+ggplot(flux.df, aes(x = log10(tPCB))) +
+  geom_histogram(aes(y = ..density..),
+                 bins = 10,
+                 fill = "grey70",
+                 color = "black",
+                 alpha = 0.7) +
+  geom_density(color = "blue", linewidth = 1) +
+  theme_bw() +
+  labs(x = expression(bold("Flux "*Sigma*"PCB (ng/m2/d)")),
+       y = "Density")
+
 
 # Save data ---------------------------------------------------------------
 write.csv(flux.df, "Output/Data/Spokane/FluxSpokaneRiver.csv",
