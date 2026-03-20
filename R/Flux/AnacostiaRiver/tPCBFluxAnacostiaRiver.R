@@ -172,7 +172,7 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     
     k600 <- (4.46 + 7.11*u) # u (air velocity) in m/s, k600 in cm/h
     k600 <- k600 / 60 / 60 # [cm/s]
-    if(u > 5){
+    if(u > 4.2){
       V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5) # [cm/s]
     } else {
       V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-2/3) # [cm/s]
