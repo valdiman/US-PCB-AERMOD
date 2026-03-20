@@ -172,7 +172,7 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     Sc.co2.water <- v.water/diff.co2
     
     k600 <- 13.82 + 0.35 * vw # water velocity (vw) in cm/s, k600 in cm/h
-    k600 <- k600 * 60 / 60 # [cm/s]
+    k600 <- k600 / 60 / 60 # [cm/s]
     V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5) # [cm/s]
     
     # Combined air-water mass transfer

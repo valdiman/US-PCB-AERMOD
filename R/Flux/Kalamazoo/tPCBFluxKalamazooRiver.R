@@ -1,5 +1,4 @@
 # Code to estimate total PCB fluxes from Kalamazoo River
-# using 20xx and 20xx water samples
 # The code estimate the flux of each congener, and
 # sum them to get total PCB
 # Air data are not used in these calculations
@@ -174,7 +173,7 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     Sc.co2.water <- v.water/diff.co2
     
     k600 <- 13.82 + 0.35 * vw # water velocity (vw) in cm/s, k600 in cm/h
-    k600 <- k600 * 60 / 60 # [cm/s]
+    k600 <- k600 / 60 / 60 # [cm/s]
     V.PCB.water <- k600*(Sc.PCB.water/Sc.co2.water)^(-0.5) # [cm/s]
     
     # Combined air-water mass transfer
@@ -186,7 +185,7 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
 }
 
 # Compute flux matrix -----------------------------------------------------
-flux.mat <- matrix(NA, nrow = nrow(fx.site), ncol = ncol(C.PCB.water))
+flux.mat <- matrix(NA, nrow = nrow(kar), ncol = ncol(C.PCB.water))
 colnames(flux.mat) <- colnames(C.PCB.water)
 
 for(i in 1:ncol(C.PCB.water)){
@@ -195,7 +194,7 @@ for(i in 1:ncol(C.PCB.water)){
     C.PCB.water.vec = C.PCB.water[[i]],
     nOrtho.Cl[i], Kow[i],
     tair = kar$air_temp,
-    twater = kar$wt,
+    twater = kar$pred_water_temp_C,
     u10 = (10.4/(log(6.7) + 8.1)) * kar$wind_speed,
     P = kar$air_pressure,
     vwater <- kar$velocity_cms
@@ -214,6 +213,33 @@ flux.df <- cbind(
   Longitude = Longitude,
   flux.df
 )
+
+# Descriptive stats
+summary(flux.df$tPCB)
+
+# Visualization -----------------------------------------------------------
+# Histogram
+ggplot(flux.df, aes(x = tPCB)) +
+  geom_histogram(aes(y = ..density..),
+                 bins = 10,
+                 fill = "grey70",
+                 color = "black",
+                 alpha = 0.7) +
+  geom_density(color = "blue", linewidth = 1) +
+  theme_bw() +
+  labs(x = expression(bold("Flux "*Sigma*"PCB (pg/L)")),
+       y = "Density")
+
+ggplot(flux.df, aes(x = log10(tPCB))) +
+  geom_histogram(aes(y = ..density..),
+                 bins = 10,
+                 fill = "grey70",
+                 color = "black",
+                 alpha = 0.7) +
+  geom_density(color = "blue", linewidth = 1) +
+  theme_bw() +
+  labs(x = expression(bold("log10 Flux "*Sigma*"PCB (ng/m2/d)")),
+       y = "Density")
 
 # Save data ---------------------------------------------------------------
 write.csv(flux.df, "Output/Data/Kalamazoo/FluxKalamazooRiver.csv",

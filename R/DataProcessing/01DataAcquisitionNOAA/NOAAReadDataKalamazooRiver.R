@@ -36,11 +36,11 @@ stations <- isd_stations()
 # Find nearby stations (within 50 km)
 stations_nearby <- stations %>%
   mutate(distance_km = distHaversine(cbind(site_lon, site_lat), cbind(lon, lat)) / 1000) %>%
-  filter(distance_km <= 50)
+  filter(distance_km <= 70)
 
-# Select the two nearest major stations (KLMAZO/BTL CREEK INTL ARPT & W K KELLOGG AIRPORT)
+# Select the two nearest major stations (KLMAZO/BTL CREEK INTL ARPT & W GERALD R FORD INTERNATIONAL AIRPORT)
 primary_station <- stations %>% filter(usaf == "726357")
-backup_station  <- stations %>% filter(usaf == "725396")
+backup_station  <- stations %>% filter(usaf == "726350")
 
 # Read Kalamazoo River Data
 kar <- read.csv("Data/Kalamazoo/KalamazooRiver.csv")
