@@ -68,7 +68,7 @@ flow_values <- flow %>%
   mutate(
     time = as.Date(time),
     Q_cm3s = value * 28316.8,   # cfs → cm³/s
-    width_cm = 1000,           # 10 m
+    width_cm = 1200,           # 12 m
     depth_cm = 120,            # 1.2 m
     area_cm2 = width_cm * depth_cm,
     velocity_cms = Q_cm3s / area_cm2) %>%

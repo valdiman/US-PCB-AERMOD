@@ -1,7 +1,7 @@
 # Code to estimate individual PCB congener concentrations
-# from total PCB
+# from total PCB for Anacotia, Kalamazoo & Housatonic rivers
 
-# Read Aroclor profile
+# Read Aroclor profile ----------------------------------------------------
 ar <- read.csv("Data/AroclorPCBProfileGrouped.csv", stringsAsFactors = FALSE)
 
 # Normalize the PCB profiles to 1
@@ -18,7 +18,7 @@ ar$A1016 <- ar$A1016 / sum(ar$A1016)
 ar$A1248 <- ar$A1248 / sum(ar$A1248)
 ar$A1260 <- ar$A1260 / sum(ar$A1260)
 
-# Read Anacostia River
+# Read Anacostia River ----------------------------------------------------
 anr <- read.csv("Data/AnacostiaRiver/AnacostiaRiverMeteoWaterTempConcV0.csv",
                 stringsAsFactors = FALSE)
 
@@ -36,7 +36,7 @@ final_anr <- cbind(anr, anr_df)
 write.csv(final_anr, "Data/AnacostiaRiver/AnacostiaRiverMeteoWaterTempConcVF.csv",
           row.names = FALSE)
 
-# Read Kalamazoo River
+# Read Kalamazoo River ----------------------------------------------------
 kar <- read.csv("Data/Kalamazoo/KalamazooRiverMeteoWaterTempFlowConV0.csv",
                 stringsAsFactors = FALSE)
 
@@ -54,7 +54,7 @@ final_kar <- cbind(kar, kar_df)
 write.csv(final_kar, "Data/Kalamazoo/KalamazooRiverMeteoWaterTempFlowConVF.csv",
           row.names = FALSE)
 
-# Read Housatonic River
+# Read Housatonic River ---------------------------------------------------
 hor <- read.csv("Data/HousatonicRiver/housatonicRiverMeteoWaterTempFlowConcV0.csv",
                 stringsAsFactors = FALSE)
 
