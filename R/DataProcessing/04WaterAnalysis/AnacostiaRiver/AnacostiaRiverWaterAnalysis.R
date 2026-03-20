@@ -92,7 +92,7 @@ ggplot(tpcb, aes(x = "", y = tPCB)) +
   theme_bw() +
   theme(aspect.ratio = 4/1)
 
-# remove higher value
+# Remove higher value
 tpcb.2 <- tpcb %>%
   filter(tPCB < max(tPCB, na.rm = TRUE))
 
@@ -120,7 +120,7 @@ ggplot(tpcb.2, aes(x = log10(tPCB))) +
        y = "Density")
 
 # Spatial plot
-ggplot(tpcb, aes(x = factor(SiteName), y = tPCB)) + 
+ggplot(tpcb.2, aes(x = factor(SiteName), y = tPCB)) + 
   geom_point() +
   theme_bw() +
   xlab(expression("")) +
@@ -134,7 +134,7 @@ ggplot(tpcb, aes(x = factor(SiteName), y = tPCB)) +
   theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
         axis.ticks.length = unit(0.2, "cm"))
 
-ggplot(tpcb, aes(x = SiteName, y = tPCB, group = SampleDate)) + 
+ggplot(tpcb.2, aes(x = SiteName, y = tPCB, group = SampleDate)) + 
   geom_point(aes(color = SampleDate), shape = 1, size  = 2) +
   labs(color = "Date") +
   theme_bw() +
@@ -149,7 +149,7 @@ ggplot(tpcb, aes(x = SiteName, y = tPCB, group = SampleDate)) +
   theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
         axis.ticks.length = unit(0.2, "cm"))
 
-ggplot(tpcb, aes(x = format(SampleDate), y = tPCB)) +
+ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
   geom_point() +
   xlab("") +
   theme_bw() +
@@ -163,8 +163,19 @@ ggplot(tpcb, aes(x = format(SampleDate), y = tPCB)) +
   theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
         axis.ticks.length = unit(0.2, "cm"))
 
+
+
 # Save data ---------------------------------------------------------------
 # To be used for the flux calculations
-write.csv(anr.site, "Data/AnacostiaRiver/AnacostiaRiverMeteoWaterTempConcV0.csv",
+# remove higher value
+anr.site.2 <- anr.site %>%
+  filter(tPCB < max(tPCB, na.rm = TRUE))
+
+# Samples from 2016-2018
+anr.site.2$SampleDate <- as.Date(anr.site.2$SampleDate)
+anr.final <- anr.site.2[format(anr.site.2$SampleDate, "%Y") >= 2016, ]
+
+write.csv(anr.final, "Data/AnacostiaRiver/AnacostiaRiverMeteoWaterTempConcV0.csv",
           row.names = FALSE)
+
 

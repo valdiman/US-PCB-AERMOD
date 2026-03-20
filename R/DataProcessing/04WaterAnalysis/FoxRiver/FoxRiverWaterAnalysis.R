@@ -165,80 +165,13 @@ ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
   theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
         axis.ticks.length = unit(0.2, "cm"))
 
-# Remove samples < 2010
-fxr.site$SampleDate <- as.Date(fxr.site$SampleDate)
-fxr.final <- fxr.site[format(fxr.site$SampleDate, "%Y") >= 2010, ]
-
-# Histogram
-ggplot(fxr.final, aes(x = tPCB)) +
-  geom_histogram(aes(y = ..density..),
-                 bins = 10,
-                 fill = "grey70",
-                 color = "black",
-                 alpha = 0.7) +
-  geom_density(color = "blue", linewidth = 1) +
-  theme_bw() +
-  labs(x = expression(bold(Sigma*"PCB (pg/L)")),
-       y = "Density")
-
-ggplot(fxr.final, aes(x = log10(tPCB))) +
-  geom_histogram(aes(y = ..density..),
-                 bins = 10,
-                 fill = "grey70",
-                 color = "black",
-                 alpha = 0.7) +
-  geom_density(color = "blue", linewidth = 1) +
-  theme_bw() +
-  labs(x = expression(bold(Sigma*"PCB (pg/L)")),
-       y = "Density")
-
-# Spatial plot
-ggplot(fxr.final, aes(x = factor(SiteName), y = tPCB)) + 
-  geom_point() +
-  theme_bw() +
-  xlab(expression("")) +
-  theme(aspect.ratio = 10/18) +
-  ylab(expression(bold(Sigma*"PCB (pg/L)"))) +
-  theme(axis.text.y = element_text(face = "bold", size = 9),
-        axis.title.y = element_text(face = "bold", size = 9)) +
-  theme(axis.text.x = element_text(face = "bold", size = 8,
-                                   angle = 60, hjust = 1),
-        axis.title.x = element_text(face = "bold", size = 8)) +
-  theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
-        axis.ticks.length = unit(0.2, "cm"))
-
-ggplot(fxr.final, aes(x = SiteName, y = tPCB, group = SampleDate)) + 
-  geom_point(aes(color = SampleDate), shape = 1, size  = 2) +
-  labs(color = "Date") +
-  theme_bw() +
-  xlab(expression("")) +
-  theme(aspect.ratio = 10/18) +
-  ylab(expression(bold(Sigma*"PCB (pg/L)"))) +
-  theme(axis.text.y = element_text(face = "bold", size = 9),
-        axis.title.y = element_text(face = "bold", size = 9)) +
-  theme(axis.text.x = element_text(face = "bold", size = 8,
-                                   angle = 60, hjust = 1),
-        axis.title.x = element_text(face = "bold", size = 8)) +
-  theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
-        axis.ticks.length = unit(0.2, "cm"))
-
-ggplot(fxr.final, aes(x = format(SampleDate), y = tPCB)) +
-  geom_point() +
-  xlab("") +
-  theme_bw() +
-  theme(aspect.ratio = 10/20) +
-  ylab(expression(bold(Sigma*"PCB (pg/L)"))) +
-  theme(axis.text.y = element_text(face = "bold", size = 9),
-        axis.title.y = element_text(face = "bold", size = 9)) +
-  theme(axis.text.x = element_text(face = "bold", size = 7,
-                                   angle = 60, hjust = 1),
-        axis.title.x = element_text(face = "bold", size = 7)) +
-  theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
-        axis.ticks.length = unit(0.2, "cm"))
-
 # Save data ---------------------------------------------------------------
 # To be used for the flux calculations
-write.csv(fxr.site, "Data/FoxRiver/FoxRiverMeteoWaterTempConcVF.csv",
+# Remove samples < 2014
+fxr.site$SampleDate <- as.Date(fxr.site$SampleDate)
+fxr.final <- fxr.site[format(fxr.site$SampleDate, "%Y") >= 2014, ]
+
+write.csv(fxr.final, "Data/FoxRiver/FoxRiverMeteoWaterTempConcVF.csv",
           row.names = FALSE)
 
 

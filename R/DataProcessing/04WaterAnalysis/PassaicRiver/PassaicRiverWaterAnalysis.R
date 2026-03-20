@@ -171,16 +171,16 @@ ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
   theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
         axis.ticks.length = unit(0.2, "cm"))
 
-# remove higher value to be used for the flux calculations
-par_subset.2 <- par_subset %>%
-  filter(tPCB < max(tPCB, na.rm = TRUE))
-
 # Save data ---------------------------------------------------------------
 # To be used for the flux calculations
 # remove higher value
 par_subset.2 <- par_subset %>%
   filter(tPCB < max(tPCB, na.rm = TRUE))
 
-write.csv(par_subset.2, "Data/PassaicRiver/PassaicRiverMeteoWaterTempConcVF.csv",
+# Samples from 2018 & 2019
+par_subset.2$SampleDate <- as.Date(par_subset.2$SampleDate)
+par.final <- par_subset.2[format(par_subset.2$SampleDate, "%Y") >= 2018, ]
+
+write.csv(par.final, "Data/PassaicRiver/PassaicRiverMeteoWaterTempConcVF.csv",
           row.names = FALSE)
 

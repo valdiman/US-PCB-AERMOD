@@ -1,5 +1,5 @@
 # Code to estimate individual PCB congener concentrations
-# from total PCB for Anacotia, Kalamazoo & Housatonic rivers
+# from total PCB for Anacostia, Kalamazoo & Housatonic rivers
 
 # Read Aroclor profile ----------------------------------------------------
 ar <- read.csv("Data/AroclorPCBProfileGrouped.csv", stringsAsFactors = FALSE)

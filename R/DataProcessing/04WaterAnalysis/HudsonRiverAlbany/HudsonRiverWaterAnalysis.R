@@ -19,11 +19,12 @@ hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiverMeteoWaterTemp.csv")
 
 # Select Site Name near Albany
 hur.site <- hur[hur$SiteID %in% c(
-  "WCPCB-HUD004",
-  "WCPCB-HUD016",
-  "WCPCB-HUD005",
   "WCPCB-HUD001",
-  "WCPCB-HUD002"), ]
+  "WCPCB-HUD002",
+  "WCPCB-HUD004",
+  "WCPCB-HUD005",
+  "WCPCB-HUD015",
+  "WCPCB-HUD016"), ]
 
 # Select  locations, sampling date, lat, long and tPCB
 tpcb <- data.frame(
@@ -167,6 +168,10 @@ ggplot(tpcb, aes(x = format(SampleDate), y = tPCB)) +
 hur.site.2 <- hur.site %>%
   filter(tPCB < max(tPCB, na.rm = TRUE))
 
+# Samples from 2017
+hur.site.2$SampleDate <- as.Date(hur.site.2$SampleDate)
+hur.final <- hur.site.2[format(hur.site.2$SampleDate, "%Y") == 2017, ]
+
 # To be used for the flux calculations
-write.csv(hur.site.2, "Data/HudsonRiverAlbany/HudsonRiverMeteoWaterTempConcVF.csv",
+write.csv(hur.final, "Data/HudsonRiverAlbany/HudsonRiverMeteoWaterTempConcVF.csv",
           row.names = FALSE)

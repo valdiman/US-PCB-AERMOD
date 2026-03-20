@@ -19,9 +19,9 @@ spr <- read.csv("Data/Spokane/SpokaneRiverMeteoWaterTempFlow.csv")
 
 # Remove Site
 spr.site <- spr[!spr$SiteID %in% c(
-  "WCPCB-SPR002", "WCPCB-SPR006", "WCPCB-SPR008",
-  "WCPCB-SPR010", "WCPCB-SPR011", "WCPCB-SPR013",
-  "WCPCB-SPR015"), ]
+  "WCPCB-SPR001", "WCPCB-SPR002", "WCPCB-SPR005",
+  "WCPCB-SPR006", "WCPCB-SPR008", "WCPCB-SPR010",
+  "WCPCB-SPR011", "WCPCB-SPR013", "WCPCB-SPR015"), ]
 
 # Select  locations, sampling date, lat, long and tPCB
 tpcb <- data.frame(
@@ -139,7 +139,7 @@ ggplot(tpcb.2, aes(x = factor(SiteName), y = tPCB)) +
   theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
         axis.ticks.length = unit(0.2, "cm"))
 
-ggplot(tpcb.2, aes(x = SiteName, y = tPCB, group = SampleDate)) + 
+ggplot(tpcb, aes(x = SiteName, y = tPCB, group = SampleDate)) + 
   geom_point(aes(color = SampleDate), shape = 1, size  = 2) +
   labs(color = "Date") +
   theme_bw() +
@@ -154,7 +154,7 @@ ggplot(tpcb.2, aes(x = SiteName, y = tPCB, group = SampleDate)) +
   theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
         axis.ticks.length = unit(0.2, "cm"))
 
-ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
+ggplot(tpcb, aes(x = format(SampleDate), y = tPCB)) +
   geom_point() +
   xlab("") +
   theme_bw() +

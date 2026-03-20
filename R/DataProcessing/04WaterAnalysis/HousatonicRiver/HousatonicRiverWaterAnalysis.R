@@ -173,7 +173,13 @@ ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
 hor.site.2 <- hor.site %>%
   filter(tPCB < max(tPCB, na.rm = TRUE))
 
+# Samples from 2006-2007
+hor.site.2$SampleDate <- as.Date(hor.site.2$SampleDate)
+hor.final <- hor.site.2[
+  format(hor.site.2$SampleDate, "%Y") >= 2006 &
+    format(hor.site.2$SampleDate, "%Y") <= 2007,]
+
 # To be used for the flux calculations
-write.csv(hor.site.2, "Data/HousatonicRiver/HousatonicRiverMeteoWaterTempFlowConcV0.csv",
+write.csv(hor.final, "Data/HousatonicRiver/HousatonicRiverMeteoWaterTempFlowConcV0.csv",
           row.names = FALSE)
 

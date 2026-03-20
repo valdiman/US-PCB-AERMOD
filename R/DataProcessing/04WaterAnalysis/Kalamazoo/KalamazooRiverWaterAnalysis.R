@@ -18,7 +18,7 @@
 # Read water concentrations
 kar <- read.csv("Data/Kalamazoo/KalamazooRiverMeteoWaterTempFlow.csv")
 
-# Select Site Name near Albany
+# Select Site Name near Kalamazoo
 kar.site <- kar[kar$SiteID %in% c(
   "WCPCB-KAL002",
   "WCPCB-KAL013",
@@ -170,16 +170,15 @@ ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
   theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
         axis.ticks.length = unit(0.2, "cm"))
 
-
-# remove higher value to be used for the flux calculations
-kar.site.2 <- kar.site %>%
-  filter(tPCB < max(tPCB, na.rm = TRUE))
-
 # Save data ---------------------------------------------------------------
 kar.site.2 <- kar.site %>%
   filter(tPCB < max(tPCB, na.rm = TRUE))
 
+# Samples from 2000
+kar.site.2$SampleDate <- as.Date(kar.site.2$SampleDate)
+kar.final <- kar.site[format(kar.site.2$SampleDate, "%Y") == 2000, ]
+
 # To be used for the flux calculations
-write.csv(kar.site.2, "Data/Kalamazoo/KalamazooRiverMeteoWaterTempFlowConV0.csv",
+write.csv(kar.final, "Data/Kalamazoo/KalamazooRiverMeteoWaterTempFlowConV0.csv",
           row.names = FALSE)
 
