@@ -2,9 +2,9 @@
 dir.create("R")
 
 dir.create("R/ReadData")
-dir.create("R/ReadData/NOAA")
-dir.create("R/ReadData/WaterFlow")
-dir.create("R/ReadData/WaterTemp")
+dir.create("R/ReadData/1_NOAA")
+dir.create("R/ReadData/2_WaterTemp")
+dir.create("R/ReadData/3_WaterFlow")
 
 dir.create("R/Flux")
 dir.create("R/Flux/AnacostiaRiver")
