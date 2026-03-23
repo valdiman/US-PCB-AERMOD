@@ -2,7 +2,13 @@
 # The code estimate the flux of each congener, and
 # sum them to get total PCB
 # Air data are not used in these calculations
-# No needs of R packages
+
+# Packages and libraries --------------------------------------------------
+# Install packages
+install.packages("ggplot2")
+
+# Load libraries
+library("ggplot2")
 
 # Chemical properties -----------------------------------------------------
 cp <- data.frame(
@@ -217,6 +223,9 @@ flux.df <- cbind(
 
 # Descriptive stats
 summary(flux.df$tPCB)
+sss <- sd(flux.df$tPCB)
+q2.5 <- quantile(flux.df$tPCB, 0.025)
+q97.5 <- quantile(flux.df$tPCB, 0.975)
 
 # Visualization -----------------------------------------------------------
 # Histogram
@@ -241,6 +250,9 @@ ggplot(flux.df, aes(x = log10(tPCB))) +
   theme_bw() +
   labs(x = expression(bold("log10 Flux "*Sigma*"PCB (ng/m2/d)")),
        y = "Density")
+
+
+
 
 # Save data ---------------------------------------------------------------
 write.csv(flux.df, "Output/Data/AnacostiaRiver/FluxAnacostiaRiver.csv",
