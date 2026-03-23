@@ -271,9 +271,9 @@ plot.flux <- ggplot(flux.df, aes(x = SampleDate, y = tPCB)) +
 plot.flux
 
 # Save plot in folder
-ggsave("Output/Plot/PassaicRiver/fluxtPCBPassaicRiver2014_2018.png",
+ggsave("Output/Plot/PassaicRiver/fluxtPCBPassaicRiver2018_2019.png",
        plot = plot.flux, width = 16, height = 8, dpi = 500)
 
 # Save data ---------------------------------------------------------------
-write.csv(flux.df, "Output/Data/PassaicRiver/fluxPCBPassaicRiver_2018_2019.csv",
+write.csv(flux.df, "Output/Data/PassaicRiver/fluxPCBPassaicRiver2018_2019.csv",
           row.names = FALSE)
