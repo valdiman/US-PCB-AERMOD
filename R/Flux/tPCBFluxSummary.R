@@ -4,11 +4,16 @@
 # Packages and libraries --------------------------------------------------
 # Install packages
 install.packages("ggplot2")
+install.packages("scales")
+install.packages("dplyr")
 
 # Load libraries
-library(ggplot2)
-library(scales)
-library(dplyr)
+{
+  library(ggplot2)
+  library(scales)
+  library(dplyr)
+}
+  
 
 # Read flux data ----------------------------------------------------------
 # Flux generated for each location
