@@ -2,7 +2,13 @@
 # The code estimate the flux of each congener, and
 # sum them to get total PCB
 # Air data are not used in these calculations
-# No needs of R packages
+
+# Packages and libraries --------------------------------------------------
+# Install packages
+install.packages("ggplot2")
+
+# Load libraries
+library("ggplot2")
 
 # Chemical properties -----------------------------------------------------
 cp <- data.frame(
@@ -216,6 +222,12 @@ flux.df <- cbind(
 
 # Descriptive stats
 summary(flux.df$tPCB)
+sss <- sd(flux.df$tPCB)
+sss
+q2.5 <- quantile(flux.df$tPCB, 0.025)
+q2.5
+q97.5 <- quantile(flux.df$tPCB, 0.975)
+q97.5
 
 # Visualization -----------------------------------------------------------
 # Histogram
@@ -241,6 +253,27 @@ ggplot(flux.df, aes(x = log10(tPCB))) +
   labs(x = expression(bold("Flux "*Sigma*"PCB (ng/m2/d)")),
        y = "Density")
 
+# Time series
+# Change SampleDate to date format
+flux.df$SampleDate <- as.Date(flux.df$SampleDate)
+
+plot.flux <- ggplot(flux.df, aes(x = SampleDate, y = tPCB)) +
+  geom_point(shape = 21, fill = NA, size = 4, stroke = 1.2, color = "#F8766D") +
+  labs(x = NULL, y = expression(Sigma*"PCB Flux (ng/"*m^2*"/d)")) +
+  scale_x_date(date_breaks = "3 months", date_labels = "%b-%Y") +
+  theme_bw(base_size = 14) +
+  theme(aspect.ratio = 8/16,
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  annotate("text", x = as.Date("2019-04-01"), y = 10000,
+           label = "Passaic River", size = 5)
+
+# see plot
+plot.flux
+
+# Save plot in folder
+ggsave("Output/Plot/PassaicRiver/fluxtPCBPassaicRiver2014_2018.png",
+       plot = plot.flux, width = 16, height = 8, dpi = 500)
+
 # Save data ---------------------------------------------------------------
-write.csv(flux.df, "Output/Data/PassaicRiver/FluxPassaicRiver.csv",
+write.csv(flux.df, "Output/Data/PassaicRiver/tFluxPassaicRiver_2018_2019.csv",
           row.names = FALSE)

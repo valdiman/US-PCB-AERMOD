@@ -224,8 +224,11 @@ flux.df <- cbind(
 # Descriptive stats
 summary(flux.df$tPCB)
 sss <- sd(flux.df$tPCB)
+sss
 q2.5 <- quantile(flux.df$tPCB, 0.025)
+q2.5
 q97.5 <- quantile(flux.df$tPCB, 0.975)
+q97.5
 
 # Visualization -----------------------------------------------------------
 # Histogram
@@ -251,9 +254,27 @@ ggplot(flux.df, aes(x = log10(tPCB))) +
   labs(x = expression(bold("log10 Flux "*Sigma*"PCB (ng/m2/d)")),
        y = "Density")
 
+# Time series
+# Change SampleDate to date format
+flux.df$SampleDate <- as.Date(flux.df$SampleDate)
 
+plot.flux <- ggplot(flux.df, aes(x = SampleDate, y = tPCB)) +
+  geom_point(shape = 21, fill = NA, size = 4, stroke = 1.2, color = "#F8766D") +
+  labs(x = NULL, y = expression(Sigma*"PCB Flux (ng/"*m^2*"/d)")) +
+  scale_x_date(date_breaks = "3 months", date_labels = "%b-%Y") +
+  theme_bw(base_size = 14) +
+  theme(aspect.ratio = 8/16,
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  annotate("text", x = as.Date("2018-01-01"), y = 5000,
+           label = "Anacostia River", size = 5)
 
+# see plot
+plot.flux
+
+# Save plot in folder
+ggsave("Output/Plot/AnacostiaRiver/fluxtPCBAnacostiaRiver2016_2017_2018.png", plot = plot.flux, width = 16,
+       height = 8, dpi = 500)
 
 # Save data ---------------------------------------------------------------
-write.csv(flux.df, "Output/Data/AnacostiaRiver/FluxAnacostiaRiver.csv",
+write.csv(flux.df, "Output/Data/AnacostiaRiver/FluxAnacostiaRiver2016_2017_2018.csv",
           row.names = FALSE)
