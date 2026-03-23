@@ -16,13 +16,6 @@ dir.create("R/DataProcessing/04WaterAnalysis/Spokane")
 dir.create("R/DataProcessing/05PCBProfile")
 
 dir.create("R/Flux")
-dir.create("R/Flux/AnacostiaRiver")
-dir.create("R/Flux/FoxRiver")
-dir.create("R/Flux/HousatonicRiver")
-dir.create("R/Flux/HudsonRiverAlbany")
-dir.create("R/Flux/Kalamazoo")
-dir.create("R/Flux/PassaicRiver")
-dir.create("R/Flux/Spokane")
 
 dir.create("R/Summary")
 dir.create("R/Summary/AnacostiaRiver")
