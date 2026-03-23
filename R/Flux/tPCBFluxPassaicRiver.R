@@ -275,5 +275,5 @@ ggsave("Output/Plot/PassaicRiver/fluxtPCBPassaicRiver2014_2018.png",
        plot = plot.flux, width = 16, height = 8, dpi = 500)
 
 # Save data ---------------------------------------------------------------
-write.csv(flux.df, "Output/Data/PassaicRiver/tFluxPassaicRiver_2018_2019.csv",
+write.csv(flux.df, "Output/Data/PassaicRiver/fluxPCBPassaicRiver_2018_2019.csv",
           row.names = FALSE)

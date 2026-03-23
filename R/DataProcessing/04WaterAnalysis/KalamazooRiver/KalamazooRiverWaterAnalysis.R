@@ -1,4 +1,5 @@
-# Evaluate Hudson River water PCB data
+# Evaluate Kalamazoo River water PCB data
+# Aroclor 1016
 
 # Packages and libraries needed --------------------------------------------
 # Install packages
@@ -15,24 +16,22 @@
 
 # Read data ---------------------------------------------------------------
 # Read water concentrations
-hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiverMeteoWaterTemp.csv")
+kar <- read.csv("Data/KalamazooRiver/KalamazooRiverMeteoWaterTempFlow.csv")
 
-# Select Site Name near Albany
-hur.site <- hur[hur$SiteID %in% c(
-  "WCPCB-HUD001",
-  "WCPCB-HUD002",
-  "WCPCB-HUD004",
-  "WCPCB-HUD005",
-  "WCPCB-HUD015",
-  "WCPCB-HUD016"), ]
+# Select Site Name near Kalamazoo
+kar.site <- kar[kar$SiteID %in% c(
+  "WCPCB-KAL002",
+  "WCPCB-KAL013",
+  "WCPCB-KAL020",
+  "WCPCB-KAL025"), ]
 
 # Select  locations, sampling date, lat, long and tPCB
 tpcb <- data.frame(
-  SiteName   = hur.site$SiteName,
-  SampleDate = hur.site$SampleDate,
-  Latitude   = hur.site$Latitude,
-  Longitude  = hur.site$Longitude,
-  tPCB       = hur.site$tPCB)
+  SiteName   = kar.site$SiteName,
+  SampleDate = kar.site$SampleDate,
+  Latitude   = kar.site$Latitude,
+  Longitude  = kar.site$Longitude,
+  tPCB       = kar.site$tPCB)
 
 # Change to numeric
 tpcb[, 3:5] <- lapply(tpcb[, 3:5], as.numeric)
@@ -96,6 +95,14 @@ ggplot(tpcb, aes(x = "", y = tPCB)) +
 tpcb.2 <- tpcb %>%
   filter(tPCB < max(tPCB, na.rm = TRUE))
 
+# basic quantities
+mu_log  <- mean(log(tpcb.2$tPCB), na.rm = TRUE)      # mean of log
+sd_log  <- sd(log(tpcb.2$tPCB), na.rm = TRUE)        # sd of log
+
+# Geometric values
+geo_mean <- exp(mu_log)
+geo_gsd  <- exp(sd_log)
+
 # Histogram
 ggplot(tpcb.2, aes(x = tPCB)) +
   geom_histogram(aes(y = ..density..),
@@ -120,7 +127,7 @@ ggplot(tpcb.2, aes(x = log10(tPCB))) +
        y = "Density")
 
 # Spatial plot
-ggplot(tpcb, aes(x = factor(SiteName), y = tPCB)) + 
+ggplot(tpcb.2, aes(x = factor(SiteName), y = tPCB)) + 
   geom_point() +
   theme_bw() +
   xlab(expression("")) +
@@ -134,7 +141,7 @@ ggplot(tpcb, aes(x = factor(SiteName), y = tPCB)) +
   theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
         axis.ticks.length = unit(0.2, "cm"))
 
-ggplot(tpcb, aes(x = SiteName, y = tPCB, group = SampleDate)) + 
+ggplot(tpcb.2, aes(x = SiteName, y = tPCB, group = SampleDate)) + 
   geom_point(aes(color = SampleDate), shape = 1, size  = 2) +
   labs(color = "Date") +
   theme_bw() +
@@ -149,7 +156,7 @@ ggplot(tpcb, aes(x = SiteName, y = tPCB, group = SampleDate)) +
   theme(axis.ticks = element_line(linewidth = 0.8, color = "black"), 
         axis.ticks.length = unit(0.2, "cm"))
 
-ggplot(tpcb, aes(x = format(SampleDate), y = tPCB)) +
+ggplot(tpcb.2, aes(x = format(SampleDate), y = tPCB)) +
   geom_point() +
   xlab("") +
   theme_bw() +
@@ -164,14 +171,14 @@ ggplot(tpcb, aes(x = format(SampleDate), y = tPCB)) +
         axis.ticks.length = unit(0.2, "cm"))
 
 # Save data ---------------------------------------------------------------
-# remove higher value
-hur.site.2 <- hur.site %>%
+kar.site.2 <- kar.site %>%
   filter(tPCB < max(tPCB, na.rm = TRUE))
 
-# Samples from 2017
-hur.site.2$SampleDate <- as.Date(hur.site.2$SampleDate)
-hur.final <- hur.site.2[format(hur.site.2$SampleDate, "%Y") == 2017, ]
+# Samples from 2000
+kar.site.2$SampleDate <- as.Date(kar.site.2$SampleDate)
+kar.final <- kar.site[format(kar.site.2$SampleDate, "%Y") == 2000, ]
 
 # To be used for the flux calculations
-write.csv(hur.final, "Data/HudsonRiverAlbany/HudsonRiverMeteoWaterTempConcVF.csv",
+write.csv(kar.final, "Data/KalamazooRiver/KalamazooRiverMeteoWaterTempFlowConV0.csv",
           row.names = FALSE)
+

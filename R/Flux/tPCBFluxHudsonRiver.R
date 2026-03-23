@@ -101,7 +101,7 @@ cp <- data.frame(
 # Water concentrations and meteorological data ----------------------------
 # Read data from Data Folder
 # Concentration in pg/L [ng/m3]
-hur <- read.csv("Data/HudsonRiverAlbany/HudsonRiverMeteoWaterTempConcVF.csv")
+hur <- read.csv("Data/HudsonRiver/HudsonRiverMeteoWaterTempConcVF.csv")
 
 # Calculate
 C.PCB.water <- hur[, 7:110]
@@ -271,9 +271,9 @@ plot.flux <- ggplot(flux.df, aes(x = SampleDate, y = tPCB)) +
 plot.flux
 
 # Save plot in folder
-ggsave("Output/Plot/HudsonRiverAlbany/fluxtPCBHusdonRiver2017.png", plot = plot.flux, width = 16,
+ggsave("Output/Plot/HudsonRiver/fluxtPCBHusdonRiver2017.png", plot = plot.flux, width = 16,
        height = 8, dpi = 500)
 
 # Save data ---------------------------------------------------------------
-write.csv(flux.df, "Output/Data/HudsonRiverAlbany/FluxHudsonRiverAlbany2017.csv",
+write.csv(flux.df, "Output/Data/HudsonRiver/fluxPCBHudsonRiver2017.csv",
           row.names = FALSE)

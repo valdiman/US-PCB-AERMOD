@@ -22,7 +22,7 @@
 
 # Read data ---------------------------------------------------------------
 # From Data Folder, Kalamazoo River.csv
-kar <- read.csv("Data/Kalamazoo/KalamazooRiverMeteoWaterTemp.csv")
+kar <- read.csv("Data/KalamazooRiver/KalamazooRiverMeteoWaterTemp.csv")
 
 # Convert from "m/d/YYYY" to Date
 kar$SampleDate <- as.Date(kar$SampleDate)
@@ -80,5 +80,5 @@ kar <- kar %>%
             by = c("SampleDate" = "time"))
 
 # save
-write.csv(kar, "Data/Kalamazoo/KalamazooRiverMeteoWaterTempFlow.csv", row.names = FALSE)
+write.csv(kar, "Data/KalamazooRiver/KalamazooRiverMeteoWaterTempFlow.csv", row.names = FALSE)
 

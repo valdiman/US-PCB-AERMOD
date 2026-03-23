@@ -70,7 +70,7 @@ find_single_col <- function(df, pattern, what = "column") {
 }
 
 # ---- 1. Read data ----
-kar <- read.csv("Data/Kalamazoo/KalamazooRiverMeteo.csv", stringsAsFactors = FALSE)
+kar <- read.csv("Data/KalamazooRiver/KalamazooRiverMeteo.csv", stringsAsFactors = FALSE)
 kar$SampleDate <- as.Date(kar$SampleDate)   # ensure Date
 
 # Keep only 2000+
@@ -155,4 +155,4 @@ out_pred <- out %>%
   select(all_of(names(kar)), pred_water_temp_C)
 
 # ---- 5. Save result ----
-write.csv(out_pred, "Data/Kalamazoo/KalamazooRiverMeteoWaterTemp.csv", row.names = FALSE)
+write.csv(out_pred, "Data/KalamazooRiver/KalamazooRiverMeteoWaterTemp.csv", row.names = FALSE)

@@ -101,7 +101,7 @@ cp <- data.frame(
 # Water concentrations and meteorological data ----------------------------
 # Read data from Data Folder
 # Concentration in pg/L [ng/m3]
-spr <- read.csv("Data/Spokane/SpokaneRiverMeteoWaterTempFlowConcVF.csv")
+spr <- read.csv("Data/SpokaneRiver/SpokaneRiverMeteoWaterTempFlowConcVF.csv")
 
 # Calculate
 C.PCB.water <- spr[, 7:110]
@@ -270,9 +270,9 @@ plot.flux <- ggplot(flux.df, aes(x = SampleDate, y = tPCB)) +
 plot.flux
 
 # Save plot in folder
-ggsave("Output/Plot/Spokane/fluxtPCBSpokaneRiver2014_2016.png",
+ggsave("Output/Plot/SpokaneRiver/fluxtPCBSpokaneRiver2014_2016.png",
        plot = plot.flux, width = 16, height = 8, dpi = 500)
 
 # Save data ---------------------------------------------------------------
-write.csv(flux.df, "Output/Data/Spokane/tPCBFluxSpokaneRiver2014_2016.csv",
+write.csv(flux.df, "Output/Data/SpokaneRiver/fluxPCBSpokaneRiver2014_2016.csv",
           row.names = FALSE)

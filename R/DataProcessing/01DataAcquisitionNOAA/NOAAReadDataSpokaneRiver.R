@@ -42,7 +42,7 @@ stations_nearby <- stations %>%
 spr.station <- stations[stations$usaf == "727856", ]
 
 # Read Spokane River Data
-spr <- read.csv("Data/Spokane/SpokaneRiver.csv")
+spr <- read.csv("Data/SpokaneRiver/SpokaneRiver.csv")
 spr$SampleDate <- as.Date(spr$SampleDate)
 
 # Get unique years needed
@@ -94,5 +94,5 @@ spr <- spr %>%
   left_join(weather_daily, by = c("SampleDate" = "date"))
 
 # Save
-write.csv(spr, "Data/Spokane/SpokaneRiverMeteo.csv", row.names = FALSE)
+write.csv(spr, "Data/SpokaneRiver/SpokaneRiverMeteo.csv", row.names = FALSE)
 

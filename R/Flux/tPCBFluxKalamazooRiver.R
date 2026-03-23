@@ -102,7 +102,7 @@ cp <- data.frame(
 # Water concentrations and meteorological data ----------------------------
 # Read data from Data Folder
 # Concentration in pg/L [ng/m3]
-kar <- read.csv("Data/Kalamazoo/KalamazooRiverMeteoWaterTempFlowConVF.csv")
+kar <- read.csv("Data/KalamazooRiver/KalamazooRiverMeteoWaterTempFlowConVF.csv")
 
 # Calculate averages
 C.PCB.water <- kar[, 13:116]
@@ -271,9 +271,9 @@ plot.flux <- ggplot(flux.df, aes(x = SampleDate, y = tPCB)) +
 plot.flux
 
 # Save plot in folder
-ggsave("Output/Plot/Kalamazoo/fluxtPCBKalamazooRiver2000_2001.png",
+ggsave("Output/Plot/KalamazooRiver/fluxtPCBKalamazooRiver2000_2001.png",
        plot = plot.flux, width = 16, height = 8, dpi = 500)
 
 # Save data ---------------------------------------------------------------
-write.csv(flux.df, "Output/Data/Kalamazoo/tPCBFluxKalamazooRiver2000_2001.csv",
+write.csv(flux.df, "Output/Data/KalamazooRiver/fluxPCBKalamazooRiver2000_2001.csv",
           row.names = FALSE)

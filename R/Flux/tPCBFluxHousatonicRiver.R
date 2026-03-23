@@ -274,5 +274,5 @@ ggsave("Output/Plot/HousatonicRiver/fluxtPCBHousatonicRiver2006_2007.png", plot 
        height = 8, dpi = 500)
 
 # Save data ---------------------------------------------------------------
-write.csv(flux.df, "Output/Data/HousatonicRiver/tPCBFluxHousatonicRiver2006_2007.csv",
+write.csv(flux.df, "Output/Data/HousatonicRiver/fluxPCBHousatonicRiver2006_2007.csv",
           row.names = FALSE)

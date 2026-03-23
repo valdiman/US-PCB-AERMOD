@@ -125,5 +125,5 @@ kar <- kar %>%
     by = c("SampleDate" = "date"))
 
 # Save
-write.csv(kar, "Data/Kalamazoo/KalamazooRiverMeteo.csv", row.names = FALSE)
+write.csv(kar, "Data/KalamazooRiver/KalamazooRiverMeteo.csv", row.names = FALSE)
 
