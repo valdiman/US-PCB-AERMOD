@@ -14,7 +14,6 @@ install.packages("dplyr")
   library(dplyr)
 }
   
-
 # Read flux data ----------------------------------------------------------
 # Flux generated for each location
 # Anacostia River
@@ -56,12 +55,22 @@ spr.tpcb$Site <- "Spokane River"
 # Combine data ------------------------------------------------------------
 flux.tpcb <- rbind(anr.tpcb, fxr.tpcb, hor.tpcb, hur.tpcb, kar.tpcb, par.tpcb, spr.tpcb)
 
+# Change name of flux
 flux.tpcb <- flux.tpcb %>%
   rename(tPCBFlux = tPCB)
 
-# Add fluxes already calculated from IHSC (2017), New Bedford Harbor (2015) and
+# Change SampleDate to date format
+flux.tpcb$SampleDate <- as.Date(flux.tpcb$SampleDate)
+
+# Add fluxes already calculated from New Bedford Harbor (2015), IHSC (2017) and
+# Portland Harbor (2018)
+
 # New Bedford Harbor (2015)
-new_rows <- data.frame(
+# Ref: Martinez, Hadnott, Awad, Herkert, Tomsho, Basra, Scammell, Heiger-Bernays
+# and Hornbuckle (2017) Release of Airborne PCBs from New Bedford Harbor Results
+# in Elevated Concentrations in the Surrounding Air Environ Sci Technol Let 4 (4),
+# 127-131, DOI: 10.1021/acs.estlett.7b00047
+new_rows_nbh <- data.frame(
   SampleDate = as.Date(c(
     "2015-08-10", "2015-08-11", "2015-08-12",
     "2015-08-10", "2015-08-11", "2015-08-12",
@@ -76,10 +85,13 @@ new_rows <- data.frame(
     187540.6617),
   Site = rep("New Bedford Harbor", 13))
 
-flux.tpcb <- bind_rows(flux.tpcb, new_rows)
+flux.tpcb <- bind_rows(flux.tpcb, new_rows_nbh)
 
 # IHSC (2017)
 # Date corresponds to the midpoint date (passive sampler)
+# Ref: Martinez, Awad, Herkert, Hornbuckle (2019) Determination of PCB fluxes
+# from Indiana Harbor and Ship Canal using dual-deployed air and water passive
+# samplers Environ Pollut 244, 469-476, https://doi.org/10.1016/j.envpol.2018.10.048
 new_rows_ihsc <- data.frame(
   SampleDate = as.Date(c(
     "2016-12-24", "2017-02-08", "2017-03-12",
@@ -96,8 +108,19 @@ new_rows_ihsc <- data.frame(
 flux.tpcb <- bind_rows(flux.tpcb, new_rows_ihsc)
 
 # Portland Harbor (2018)
+# Ref: Slade, Martinez, Mathieu-Campbell, Cohen, Watkins, Hornbuckle (2025)
+# Airborne PCB Concentrations in Portland, Oregon: Emissions and Contributions
+# from the Portland Harbor Superfund Site ACS Environ Sci Technol Air, 2, 12, 2922-2931
+# https://doi.org/10.1021/acsestair.5c00244
+# Flux is the average of the Monte Carlo simulation
+new_rows_ph <- data.frame(
+  SampleDate = as.Date(c(
+    "2018-08-22", "2018-08-23", "2018-08-22")),
+  tPCBFlux = c(
+    458.2249, 387.81, 478.34),
+  Site = rep("Portland Harbor", 3))
 
-
+flux.tpcb <- bind_rows(flux.tpcb, new_rows_ph)
 
 # Descriptive stats
 summary(flux.tpcb$tPCBFlux)
@@ -113,23 +136,26 @@ geo_mean <- function(x, na.rm = TRUE) {
 # Calculate gm using function
 gm.flux.tpcb <- flux.tpcb %>%
   group_by(Site) %>%
-  summarise(GM = geo_mean(tPCBFlux)) %>%
+  summarise(
+    GM = geo_mean(tPCBFlux),
+    n = sum(!is.na(tPCBFlux) & tPCBFlux > 0)
+  ) %>%
   mutate(units = "ng/m2/d")
 
 # Save data ---------------------------------------------------------------
+write.csv(flux.tpcb, "Output/Data/FluxtPCBAllSites.csv",
+          row.names = FALSE)
+
 write.csv(gm.flux.tpcb, "Output/Data/gmFluxtPCBAllSites.csv",
           row.names = FALSE)
 
 # Plot
 # Time series
-# Change SampleDate to date format
-flux.tpcb$SampleDate <- as.Date(flux.tpcb$SampleDate)
-
 plot.tflux <- ggplot(flux.tpcb, aes(x = SampleDate, y = tPCBFlux, color = Site)) +
-  geom_point(shape = 21, fill = NA, size = 2.5, stroke = 1.2) +
+  geom_point(shape = 21, fill = NA, size = 2, stroke = 0.8) +
   labs(x = NULL, y = expression(Sigma*"PCB Flux (ng/"*m^2*"/d)")) +
   scale_x_date(date_breaks = "3 months", date_labels = "%b-%Y") +
-  scale_y_log10(limits = c(0.001, 10^6),
+  scale_y_log10(limits = c(0.001, 10^7),
                 labels = trans_format("log10", math_format(10^.x))) +
   theme_bw(base_size = 12) +
   theme(aspect.ratio = 8/16,
@@ -142,12 +168,12 @@ plot.tflux
 ggsave("Output/Plot/fluxtPCBAllSites.png",
        plot = plot.tflux, width = 16, height = 8, dpi = 500)
 
-box.plot.tflux <- ggplot(flux.tpcb, aes(x = Site, y = tPCB, color = Site)) +
+box.plot.tflux <- ggplot(flux.tpcb, aes(x = Site, y = tPCBFlux, color = Site)) +
   geom_boxplot(outlier.shape = NA) +
   stat_summary(aes(shape = "GM"), fun = geo_mean, geom = "point",
     size = 4, color = "black") +
   scale_shape_manual(name = "", values = c(GM = 18)) +
-  scale_y_log10(limits = c(0.001, 10^6),
+  scale_y_log10(limits = c(0.001, 10^7),
     labels = scales::trans_format("log10", scales::math_format(10^.x))) +
   labs(x = NULL, y = expression(Sigma*"PCB Flux (ng/"*m^2*"/d)"),
     color = "Site") +
