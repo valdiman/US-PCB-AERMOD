@@ -139,6 +139,13 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     u <- u10[i]
     P.atm <- P[i]
     
+    # If water is frozen, the exchange is 0
+    # References: Loose et al. 2011 and Ahn et al. 2008
+    if (is.na(T.water) || T.water < 0) {
+      F.PCB.aw[i] <- 0
+      next
+    }
+    
     # Internal energy parameters
     a <- 0.85; b <- 1; c <- 32.7
     a2 <- 0.13; b2 <- 2.9; c2 <- 47.8
@@ -233,7 +240,7 @@ q97.5
 # Visualization -----------------------------------------------------------
 # Histogram
 ggplot(flux.df, aes(x = tPCB)) +
-  geom_histogram(aes(y = ..density..),
+  geom_histogram(aes(y = after_stat(density)),
                  bins = 10,
                  fill = "grey70",
                  color = "black",
@@ -244,7 +251,7 @@ ggplot(flux.df, aes(x = tPCB)) +
        y = "Density")
 
 ggplot(flux.df, aes(x = log10(tPCB))) +
-  geom_histogram(aes(y = ..density..),
+  geom_histogram(aes(y = after_stat(density)),
                  bins = 10,
                  fill = "grey70",
                  color = "black",
