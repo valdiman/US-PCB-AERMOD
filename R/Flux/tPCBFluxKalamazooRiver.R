@@ -141,9 +141,9 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     P.atm <- P[i]
     vw <- vwater[i]
     
-    # If water is frozen, the exchange is 0
+    # If water is frozen, the exchange is 0.5
     # References: Loose et al. 2011 and Ahn et al. 2008
-    if (is.na(T.water) || T.water < 0) {
+    if (is.na(T.water) || T.water <= 0.5) {
       F.PCB.aw[i] <- 0
       next
     }

@@ -151,7 +151,9 @@ write.csv(gm.flux.tpcb, "Output/Data/gmFluxtPCBAllSites.csv",
 
 # Plot
 # Time series
-plot.tflux <- ggplot(flux.tpcb, aes(x = SampleDate, y = tPCBFlux, color = Site)) +
+flux.tpcb2 <- flux.tpcb[flux.tpcb$tPCBFlux > 0, ]
+
+plot.tflux <- ggplot(flux.tpcb2, aes(x = SampleDate, y = tPCBFlux, color = Site)) +
   geom_point(shape = 21, fill = NA, size = 2, stroke = 0.8) +
   labs(x = NULL, y = expression(Sigma*"PCB Flux (ng/"*m^2*"/d)")) +
   scale_x_date(date_breaks = "3 months", date_labels = "%b-%Y") +
