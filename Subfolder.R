@@ -16,6 +16,8 @@ dir.create("R/DataProcessing/04WaterAnalysis/SpokaneRiver")
 dir.create("R/DataProcessing/05PCBProfile")
 
 dir.create("R/Flux")
+dir.create("R/Flux/FoxRiver")
+dir.create("R/Flux/KalamazooRiver")
 
 dir.create("Data")
 dir.create("Data/AnacostiaRiver")
