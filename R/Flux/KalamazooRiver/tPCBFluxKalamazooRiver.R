@@ -9,7 +9,7 @@
 install.packages("ggplot2")
 
 # Load libraries
-library("ggplot2")
+library(ggplot2)
 
 # Chemical properties -----------------------------------------------------
 cp <- data.frame(
