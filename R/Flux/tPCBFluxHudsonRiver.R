@@ -138,9 +138,14 @@ final.result <- function(MW.PCB, H0, C.PCB.water.vec, nOrtho.Cl, Kow,
     u <- u10[i]
     P.atm <- P[i]
     
-    # If water is frozen, the exchange is 0.5
-    # References: Loose et al. 2011 and Ahn et al. 2008
-    if (is.na(T.water) || T.water <= 0.5) {
+    # If water temperature is below 0 C, assume ice-covered conditions
+    # and set volatilization flux to zero.
+    # Ice cover substantially restricts gas exchange, although some
+    # diffusion through ice may occur (Loose et al. 2010; Ahn et al. 2008).
+    # Note: these references support restricted gas exchange under
+    # ice-covered conditions but do not prescribe the 0 C threshold.
+    
+    if (T.water < 0) {
       F.PCB.aw[i] <- 0
       next
     }
